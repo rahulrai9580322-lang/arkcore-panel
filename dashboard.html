@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Arkcore - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <style>
+        :root {
+            --neon-blue: #00f2fe;
+            --bg-dark: #050a18;
+            --card-bg: #0d1630;
+            --sidebar-bg: #040816;
+            --neon-red: #ef4444;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #0a1128 0%, #000411 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Navbar with Glass Effect */
+        .navbar {
+            background: rgba(13, 22, 48, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 15px 20px;
+        }
+
+        .brand-name {
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* Sidebar Styling */
+        .offcanvas {
+            background-color: var(--sidebar-bg);
+            border-left: 2px solid var(--neon-blue);
+            width: 280px !important;
+        }
+
+        .menu-item {
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            color: #8fa3cc;
+            text-decoration: none;
+            transition: 0.3s;
+            border-radius: 10px;
+            margin: 5px 15px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            color: var(--neon-blue);
+            background: rgba(0, 242, 254, 0.1);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .menu-item i { margin-right: 15px; font-size: 1.3rem; }
+
+        .key-badge {
+            background: var(--neon-blue);
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: auto;
+        }
+
+        /* Stats Cards */
+        .main-content { padding: 30px 15px; }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-blue);
+        }
+
+        .icon-box {
+            width: 55px;
+            height: 55px;
+            border-radius: 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; margin-right: 18px;
+        }
+
+        .blue-box { background: rgba(0, 242, 254, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue); }
+        .purple-box { background: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid #a855f7; }
+        .red-box { background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); }
+        .green-box { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; }
+
+        .stat-label { color: #5c6e91; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 1.4rem; font-weight: 700; }
+
+        /* Owner Management Grid */
+        .admin-section { margin-top: 30px; display: none; } /* Default hidden */
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .admin-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: 0.3s;
+        }
+        .admin-btn:hover { border-color: var(--neon-blue); transform: scale(1.05); }
+        .admin-btn i { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar sticky-top">
+        <div class="container-fluid">
+            <span class="navbar-brand brand-name text-white">
+                <i class="bi bi-fire me-2"></i>ARK CORE PANEL
+            </span>
+            <button class="btn p-0 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+                <i class="bi bi-grid-3x3-gap-fill text-white fs-3"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebarMenu">
+        <div class="offcanvas-header border-bottom border-secondary p-4">
+            <h5 class="offcanvas-title fw-bold text-white">ARKCORE PANEL</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-0 pt-3">
+            <a href="dashboard.html" class="menu-item active"><i class="bi bi-house-door"></i> Dashboard</a>
+            <a href="keys.html" class="menu-item"><i class="bi bi-key"></i> Total Keys <span class="key-badge">128</span></a>
+            <a href="generate_key.html" class="menu-item"><i class="bi bi-plus-square"></i> Generate Key</a>
+            
+            <div id="sidebarAdminItems" style="display: none;">
+                <a href="user.html" class="menu-item"><i class="bi bi-people-fill"></i> User Management</a>
+                <a href="apps.html" class="menu-item"><i class="bi bi-cpu-fill"></i> App Management</a>
+            </div>
+
+            <a href="settings.html" class="menu-item"><i class="bi bi-gear"></i> Settings</a>
+            
+            <div class="mt-5 px-4">
+                <div class="d-flex align-items-center p-3 rounded-4" style="background: rgba(255,255,255,0.05);">
+                    <div id="userInitials" class="avatar me-3" style="width: 40px; height: 40px; background: var(--neon-blue); border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold;">U</div>
+                    <div>
+                        <div class="small fw-bold" id="userNameDisplay">User</div>
+                        <a href="logout.html" style="font-size: 10px; color: #ef4444; text-decoration: none;">LOGOUT SESSION</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container main-content">
+        
+        <div class="stat-card">
+            <div class="icon-box blue-box"><i class="bi bi-wallet2"></i></div>
+            <div>
+                <div class="stat-label">Total Balance</div>
+                <div class="stat-value" id="userBalance">₹0.00</div>
+            </div>
+        </div>
+
+        <a href="keys.html" class="stat-card">
+            <div class="icon-box purple-box"><i class="bi bi-shield-check"></i></div>
+            <div>
+                <div class="stat-label">Total Keys Generated</div>
+                <div class="stat-value" id="totalKeysDisplay">128 - Keys</div>
+            </div>
+            <i class="bi bi-chevron-right ms-auto text-muted"></i>
+        </a>
+
+        <div class="stat-card">
+            <div class="icon-box red-box" id="roleIconBox"><i class="bi bi-person-badge"></i></div>
+            <div>
+                <div class="stat-label">Access Level</div>
+                <div class="stat-value" id="userRole">Reseller</div>
+            </div>
+        </div>
+
+        <div class="admin-section" id="ownerDashboard">
+            <div class="stat-label mb-3 fw-bold">Owner Management</div>
+            <div class="admin-grid">
+                <a href="user.html" class="admin-btn">
+                    <i class="bi bi-people-fill text-info"></i>
+                    <span class="small fw-bold">User Mgmt</span>
+                </a>
+                <a href="apps.html" class="admin-btn">
+                    <i class="bi bi-cpu-fill text-warning"></i>
+                    <span class="small fw-bold">App Mgmt</span>
+                </a>
+                <a href="generate_key.html" class="admin-btn">
+                    <i class="bi bi-shield-lock-fill text-danger"></i>
+                    <span class="small fw-bold">Secret Gen</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- AAPKA ORIGINAL CODE (TOUCH BHI NAHI KIYA) ---
+        let currentUser = {
+            role: "Owner", 
+            name: "Keshav",
+            balance: "Unlimited"
+        };
+
+        function updateUI(user) {
+            if(user.name) {
+                document.getElementById('userNameDisplay').innerText = user.name;
+                document.getElementById('userInitials').innerText = user.name.charAt(0).toUpperCase();
+            }
+            if(user.role === "Owner") {
+                document.getElementById('ownerDashboard').style.display = "block";
+                document.getElementById('sidebarAdminItems').style.display = "block";
+                document.getElementById('userRole').innerText = "Owner";
+                document.getElementById('userBalance').innerText = user.balance;
+                document.getElementById('roleIconBox').classList.replace('red-box', 'green-box');
+                document.getElementById('roleIconBox').innerHTML = '<i class="bi bi-shield-check"></i>';
+            } else {
+                document.getElementById('userRole').innerText = "Reseller";
+                document.getElementById('userBalance').innerText = "₹" + user.balance; 
+                document.getElementById('ownerDashboard').style.display = "none";
+                document.getElementById('sidebarAdminItems').style.display = "none";
+            }
+        }
+        updateUI(currentUser); // Pehle static data chalega
+
+        // --- FIREBASE EXTRA LOGIC (SIRF DATA OVERWRITE KARNE KE LIYE) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5u_ExHIn25nKFVBK-vAYqJ7Z5zcy63nQ",
+            authDomain: "arkcore-f92a6.firebaseapp.com",
+            databaseURL: "https://arkcore-f92a6-default-rtdb.firebaseio.com",
+            projectId: "arkcore-f92a6",
+            storageBucket: "arkcore-f92a6.firebasestorage.app",
+            messagingSenderId: "309961270452",
+            appId: "1:309961270452:web:7847734a03c8bfe55123e1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        
+        firebase.database().ref('users/Munna_Kumar_Rai').on('value', (snapshot) => {
+            const fbData = snapshot.val();
+            if(fbData) {
+                currentUser = fbData; // Static data ko Firebase data se replace kiya
+                updateUI(currentUser); // UI dobara update kiya
+                
+                // Keys update extra
+                document.getElementById('totalKeysDisplay').innerText = (fbData.totalKeys || 128) + " - Keys";
+                document.querySelector('.key-badge').innerText = fbData.totalKeys || 128;
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logging Out - Arkcore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --neon-blue: #00f2fe;
+            --bg-dark: #050a18;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #0a1128 0%, #000411 100%);
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        .logout-container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(13, 22, 48, 0.8);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.1);
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+        }
+
+        .status-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logout-container">
+        <div class="spinner-border" role="status"></div>
+        <div class="status-text text-uppercase">Logging Out Session...</div>
+        <p class="text-secondary small mt-2">Please wait, clearing secure data.</p>
+    </div>
+
+    <script>
+        // 2 Second ke baad login page par bhej dega
+        setTimeout(function() {
+            // Yahan apne login page ka sahi naam likhein
+            window.location.href = "login.html"; 
+        }, 2000);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Arkcore - Generate Key</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --neon-blue: #00f2fe;
+            --bg-dark: #050a18;
+            --card-bg: #0d1630;
+            --sidebar-bg: #040816;
+            --neon-red: #ef4444;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #0a1128 0%, #000411 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(13, 22, 48, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 15px 20px;
+        }
+
+        .brand-name { font-weight: 800; letter-spacing: 2px; text-shadow: 0 0 10px var(--neon-blue); }
+
+        /* Sidebar */
+        .offcanvas { background-color: var(--sidebar-bg); border-left: 2px solid var(--neon-blue); width: 280px !important; }
+        .menu-item { padding: 18px 25px; display: flex; align-items: center; color: #8fa3cc; text-decoration: none; transition: 0.3s; border-radius: 10px; margin: 5px 15px; }
+        .menu-item:hover, .menu-item.active { color: var(--neon-blue); background: rgba(0, 242, 254, 0.1); text-shadow: 0 0 5px var(--neon-blue); }
+        .menu-item i { margin-right: 15px; font-size: 1.3rem; }
+
+        /* Main Content */
+        .main-content { padding: 30px 15px; }
+        .page-header { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+
+        .gen-card {
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card-title { font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+        label { color: #8fa3cc; font-size: 0.85rem; margin-bottom: 8px; font-weight: 600; }
+        .form-control-custom, .form-select-custom {
+            background-color: rgba(0, 4, 17, 0.5);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .form-control-custom:focus, .form-select-custom:focus {
+            background-color: rgba(0, 4, 17, 0.8);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+            color: #fff;
+            outline: none;
+        }
+
+        .btn-gen {
+            background: var(--neon-blue);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            padding: 18px;
+            width: 100%;
+            font-weight: 800;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
+            transition: 0.3s;
+        }
+        .btn-gen:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 242, 254, 0.6); }
+
+        .result-box {
+            background: rgba(0, 242, 254, 0.05);
+            border: 1px dashed var(--neon-blue);
+            border-radius: 15px;
+            padding: 18px;
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .key-title { color: #8fa3cc; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; }
+        .key-display { color: var(--neon-blue); font-family: 'Courier New', monospace; font-size: 1.3rem; font-weight: 700; word-break: break-all; text-shadow: 0 0 8px var(--neon-blue); }
+
+        .owner-section { border-top: 2px dashed rgba(255,255,255,0.05); padding-top: 30px; margin-top: 30px; display: none; }
+        .btn-gen-owner {
+            background: var(--neon-red);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 18px;
+            width: 100%;
+            font-weight: 800;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+        .result-box-owner { border-color: var(--neon-red); background: rgba(239, 68, 68, 0.05); display: none; margin-top: 15px;}
+        .key-display-owner { color: var(--neon-red); text-shadow: 0 0 8px var(--neon-red); font-size: 1.5rem; }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar sticky-top">
+        <div class="container-fluid">
+            <span class="navbar-brand brand-name text-white">
+                <i class="bi bi-fire me-2"></i>ARK CORE PANEL
+            </span>
+            <button class="btn p-0 border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+                <i class="bi bi-grid-3x3-gap-fill text-white fs-3"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebarMenu">
+        <div class="offcanvas-header border-bottom border-secondary p-4">
+            <h5 class="offcanvas-title fw-bold text-white">ARKCORE PANEL</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-0 pt-3">
+            <a href="dashboard.html" class="menu-item"><i class="bi bi-house-door"></i> Dashboard</a>
+            <a href="keys.html" class="menu-item"><i class="bi bi-key"></i> Total Keys <span class="key-badge">128</span></a>
+            <a href="generate_key.html" class="menu-item active"><i class="bi bi-plus-square"></i> Generate Key</a>
+            <a href="settings.html" class="menu-item"><i class="bi bi-gear"></i> Settings</a>
+            
+            <div class="mt-5 px-4">
+                <div class="d-flex align-items-center p-3 rounded-4" style="background: rgba(255,255,255,0.05);">
+                    <div class="avatar me-3" style="width: 40px; height: 40px; background: var(--neon-blue); border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold;">A</div>
+                    <div>
+                        <div class="small fw-bold">MunnaKumarRai</div>
+                        <a href="login.html" style="font-size: 10px; color: #ef4444; text-decoration: none;">LOGOUT SESSION</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container main-content">
+        <div class="page-header">
+            <i class="bi bi-plus-circle text-info"></i> Generate New Key
+        </div>
+
+        <div class="gen-card">
+            <div class="card-title text-info">License Key (1 Month / 2 Months)</div>
+            
+            <form id="licenseForm">
+                <label for="packageName">PACKAGE NAME</label>
+                <input type="text" id="packageName" class="form-control form-control-custom" placeholder="e.g. com.firex.cheat" required>
+
+                <label for="duration">DURATION</label>
+                <select id="duration" class="form-select form-select-custom" required>
+                    <option value="1">1 Month (15 Letters Key)</option>
+                    <option value="2">2 Months (15 Letters Key)</option>
+                </select>
+
+                <button type="submit" class="btn-gen mt-2">Generate Key</button>
+            </form>
+
+            <div id="licenseResult" class="result-box">
+                <div class="key-title">Generated License Key (15 Chars):</div>
+                <div id="licenseKeyDisplay" class="key-display">XXXX-XXXX-XXXX-XXXX</div>
+            </div>
+        </div>
+
+        <div class="owner-section" id="ownerTools">
+            <div class="gen-card" style="border-color: rgba(239, 68, 68, 0.3);">
+                <div class="card-title text-danger"><i class="bi bi-shield-lock me-2"></i> OWNER: Create Secret Code</div>
+                
+                <form id="secretForm">
+                    <label for="newRole">NEW USER ROLE</label>
+                    <select id="newRole" class="form-select form-select-custom" required>
+                        <option value="Reseller">Reseller (Limited Access)</option>
+                        <option value="Owner">New Owner (Full Access)</option>
+                    </select>
+
+                    <label for="keyLimit">KEY GENERATE LIMIT</label>
+                    <input type="number" id="keyLimit" class="form-control form-control-custom" placeholder="e.g. 50" required>
+
+                    <label for="initBalance">INITIAL USER BALANCE (₹)</label>
+                    <input type="number" id="initBalance" class="form-control form-control-custom" placeholder="e.g. 1000" required>
+
+                    <button type="submit" class="btn-gen btn-gen-owner mt-2">Generate Secret Code</button>
+                </form>
+
+                <div id="secretResult" class="result-box result-box-owner">
+                    <div class="key-title text-danger">Share this 5-digit Secret Code for Signup:</div>
+                    <div id="secretCodeDisplay" class="key-display key-display-owner">-----</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- FIREBASE CONFIG ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5u_ExHIn25nKFVBK-vAYqJ7Z5zcy63nQ",
+            authDomain: "arkcore-f92a6.firebaseapp.com",
+            databaseURL: "https://arkcore-f92a6-default-rtdb.firebaseio.com",
+            projectId: "arkcore-f92a6",
+            storageBucket: "arkcore-f92a6.firebasestorage.app",
+            messagingSenderId: "309961270452",
+            appId: "1:309961270452:web:7847734a03c8bfe55123e1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Owner Check Logic
+        const currentUser = { role: "Owner" };
+        if(currentUser.role === "Owner") {
+            document.getElementById('ownerTools').style.display = "block";
+        }
+
+        // Random String Generator
+        function generateRandomStr(length) {
+            let result = '';
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        // Part 1: License Key + Firebase Save
+        document.getElementById('licenseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const pkg = document.getElementById('packageName').value;
+            const dur = document.getElementById('duration').value;
+            const randomPart = generateRandomStr(11);
+            const finalKey = `ARK-${randomPart}`;
+            
+            db.ref('keys').push({
+                key: finalKey,
+                package: pkg,
+                duration: dur + " Month",
+                status: "Unused",
+                generatedBy: "MunnaKumarRai"
+            }).then(() => {
+                document.getElementById('licenseKeyDisplay').innerText = finalKey;
+                document.getElementById('licenseResult').style.display = 'block';
+            });
+        });
+
+        // Part 2: Owner Secret Code + Firebase Save (Now with Balance)
+        document.getElementById('secretForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const role = document.getElementById('newRole').value;
+            const limit = document.getElementById('keyLimit').value;
+            const balance = document.getElementById('initBalance').value; // Get Balance
+            const finalSecret = generateRandomStr(5);
+            
+            db.ref('secrets').push({
+                code: finalSecret,
+                role: role,
+                limit: limit,
+                initialBalance: balance, // Save Balance to Firebase
+                status: "Active"
+            }).then(() => {
+                document.getElementById('secretCodeDisplay').innerText = finalSecret;
+                document.getElementById('secretResult').style.display = 'block';
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
