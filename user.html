@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Arkcore - Elite User Management</title>
+    <title>Arkcore - User Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
@@ -15,89 +15,90 @@
             --neon-blue: #00f2fe; 
             --card-bg: #0d1630; 
             --neon-red: #ff3131; 
-            --neon-green: #10b981;
         }
+        
         body { 
             background: radial-gradient(circle at center, #0a1128 0%, #000411 100%);
             color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Navbar Fix */
         .navbar { 
-            background: rgba(13, 22, 48, 0.95); backdrop-filter: blur(15px); 
-            border-bottom: 2px solid var(--neon-blue); padding: 12px 20px;
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+            background: rgba(13, 22, 48, 0.95); backdrop-filter: blur(10px); 
+            border-bottom: 2px solid var(--neon-blue); padding: 10px 15px;
         }
-        .brand-name { font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 10px var(--neon-blue); color: var(--neon-blue); }
-        
-        .main-content { padding: 20px 10px; }
 
-        /* 🔥 SLIDE FIX: Table Container */
+        /* 📱 RESPONSIVE CARD FIX */
+        .main-content { padding: 15px 5px; }
+
         .user-card {
-            background: var(--card-bg); border-radius: 25px; padding: 10px;
-            border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            overflow: hidden; /* Bahar na nikle */
+            background: var(--card-bg); border-radius: 20px;
+            width: 98%; margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
         }
 
-        .scroll-wrapper {
-            overflow-x: auto; /* Enable Horizontal Scroll */
+        /* ↕️ TABLE SCROLL FIX */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto; /* Enable touch scrolling */
             -webkit-overflow-scrolling: touch;
-            border-radius: 15px;
         }
 
         .table { 
-            color: #fff; vertical-align: middle; margin-bottom: 0; 
-            min-width: 600px; /* Force width taaki slide ho sake */
+            color: #fff; vertical-align: middle; margin-bottom: 0;
+            min-width: 500px; /* Minimum width to prevent squeezing */
         }
-        
+
         .table thead th { 
             background: rgba(0, 242, 254, 0.1); border: none; 
-            color: var(--neon-blue); font-size: 0.75rem; text-transform: uppercase; padding: 15px; 
+            color: var(--neon-blue); font-size: 0.7rem; padding: 12px;
+            text-transform: uppercase;
         }
-        
-        .user-row td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        .badge-role { padding: 5px 12px; border-radius: 50px; font-size: 0.65rem; font-weight: 800; border: 1px solid; }
+        .user-row td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+
+        /* Badge & Actions */
+        .badge-role { padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: bold; border: 1px solid; }
         .bg-reseller { background: rgba(0, 242, 254, 0.1); color: var(--neon-blue); border-color: var(--neon-blue); }
         .bg-owner { background: rgba(255, 49, 49, 0.1); color: var(--neon-red); border-color: var(--neon-red); }
 
-        /* Action Buttons */
-        .action-group { display: flex; gap: 10px; }
+        .action-group { display: flex; gap: 5px; }
         .action-btn { 
-            width: 35px; height: 35px; border-radius: 10px; 
+            width: 32px; height: 32px; border-radius: 8px; 
             display: flex; align-items: center; justify-content: center; border: none;
         }
         .btn-edit { background: rgba(0, 242, 254, 0.2); color: var(--neon-blue); }
         .btn-del { background: rgba(255, 49, 49, 0.2); color: var(--neon-red); }
 
-        /* Modal styling as per your previous style */
-        .modal-content { background: #090e1a; border: 2px solid var(--neon-blue); border-radius: 30px; color: #fff; }
+        /* Modal Fix for Mobile */
+        .modal-content { background: #090e1a; border: 2px solid var(--neon-blue); border-radius: 25px; color: #fff; }
         .form-control-custom {
             background: rgba(0,0,0,0.5); border: 1px solid rgba(0, 242, 254, 0.3); color: #fff;
-            border-radius: 12px; height: 45px; width: 100%; margin-bottom: 15px; padding: 0 15px;
+            border-radius: 10px; height: 45px; width: 100%; margin-bottom: 12px; padding: 0 12px;
         }
-        .btn-save { background: var(--neon-blue); color: #000; font-weight: bold; border-radius: 12px; width: 100%; border: none; padding: 12px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <nav class="navbar sticky-top">
-        <div class="container-fluid">
+        <div class="container-fluid d-flex align-items: center;">
             <a href="dashboard.html" class="text-white"><i class="bi bi-chevron-left fs-4"></i></a>
-            <span class="navbar-brand brand-name mx-auto">ARK CORE MEMBERS</span>
+            <span class="mx-auto fw-bold" style="letter-spacing: 1px; color: var(--neon-blue);">ARK CORE MEMBERS</span>
         </div>
     </nav>
 
-    <div class="container main-content">
+    <div class="container-fluid main-content">
         <div class="user-card">
-            <div class="scroll-wrapper">
+            <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>User Details</th>
-                            <th>Role</th>
-                            <th>Balance</th>
-                            <th>Action</th>
+                            <th style="width: 35%;">User Profile</th>
+                            <th style="width: 20%;">Role</th>
+                            <th style="width: 20%;">Balance</th>
+                            <th style="width: 25%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="userTableBody">
@@ -106,37 +107,29 @@
             </div>
             <div id="loader" class="text-center p-4">
                 <div class="spinner-border text-info spinner-border-sm"></div>
-                <div class="mt-2 small">SYNCING DATABASE...</div>
+                <div class="mt-2" style="font-size: 0.7rem;">SYNCING...</div>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered px-4">
-            <div class="modal-content p-2">
-                <div class="modal-header border-0">
-                    <h6 class="modal-title fw-bold text-info">EDIT MEMBER DATA</h6>
+        <div class="modal-dialog modal-dialog-centered mx-3">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold">EDIT MEMBER</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="editUserId">
-                    <label class="small text-muted mb-1">Username (Fixed)</label>
-                    <input type="text" id="editUsername" class="form-control-custom" readonly>
-                    
-                    <label class="small text-muted mb-1">New Password</label>
-                    <input type="text" id="editPassword" class="form-control-custom">
-                    
-                    <label class="small text-muted mb-1">Update Balance (₹)</label>
-                    <input type="number" id="editBalance" class="form-control-custom">
-                    
-                    <label class="small text-muted mb-1">System Role</label>
+                    <input type="text" id="editUsername" class="form-control-custom" readonly style="opacity: 0.6;">
+                    <input type="text" id="editPassword" class="form-control-custom" placeholder="New Password">
+                    <input type="number" id="editBalance" class="form-control-custom" placeholder="Balance">
                     <select id="editRole" class="form-control-custom">
                         <option value="User">Standard User</option>
                         <option value="Reseller">Reseller</option>
                         <option value="Owner">Owner</option>
                     </select>
-                    
-                    <button class="btn-save mt-2" onclick="saveToFirebase()">UPDATE NOW</button>
+                    <button class="btn btn-info w-100 fw-bold py-2" style="border-radius: 10px;" onclick="saveToFirebase()">SAVE CHANGES</button>
                 </div>
             </div>
         </div>
@@ -157,7 +150,7 @@
         const db = firebase.database();
         const modalRef = new bootstrap.Modal(document.getElementById('editModal'));
 
-        // Load Users
+        // Load Real-time Data
         db.ref('Users').on('value', (snap) => {
             document.getElementById('loader').style.display = 'none';
             const body = document.getElementById('userTableBody');
@@ -171,8 +164,8 @@
                 body.innerHTML += `
                     <tr class="user-row">
                         <td>
-                            <div class="fw-bold">${u.username}</div>
-                            <div style="font-size: 0.6rem; color: #6c757d;">PWD: ${u.password}</div>
+                            <div class="fw-bold" style="font-size: 0.8rem;">${u.username}</div>
+                            <div style="font-size: 0.55rem; color: #6c757d;">P: ${u.password}</div>
                         </td>
                         <td><span class="badge-role ${roleClass}">${u.role || 'User'}</span></td>
                         <td class="fw-bold text-success">₹${u.balance || 0}</td>
@@ -207,12 +200,12 @@
                 role: document.getElementById('editRole').value
             }).then(() => {
                 modalRef.hide();
-                alert("Updated!");
+                alert("Data Updated!");
             });
         }
 
         function deleteUser(key) {
-            if(confirm("Delete this user?")) db.ref('Users/' + key).remove();
+            if(confirm("Permanently delete this user?")) db.ref('Users/' + key).remove();
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
