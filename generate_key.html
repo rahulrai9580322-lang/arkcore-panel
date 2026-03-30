@@ -3,178 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ARK CORE | Enterprise Access Control</title>
+    <title>ARK CORE | Professional Access Control</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
+        /* 🎨 THEME SETUP */
         :root {
             --cyan: #00f2fe;
+            --neon-purple: #bc13fe;
             --neon-red: #ff3131;
             --bg-dark: #020610;
-            --glass: rgba(13, 22, 48, 0.95);
+            --glass: rgba(13, 22, 48, 0.92);
         }
 
         body {
             background: radial-gradient(circle at top, #0d1630 0%, #000411 100%);
-            color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; min-height: 100vh;
+            color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh; margin: 0;
+            overflow-x: hidden;
         }
 
+        /* ✨ PREMIUM NAVBAR */
         .ark-nav {
             background: var(--glass); backdrop-filter: blur(25px);
-            border-bottom: 2px solid var(--cyan); padding: 15px 25px;
-            box-shadow: 0 5px 25px rgba(0, 242, 254, 0.2);
+            border-bottom: 2px solid var(--cyan); padding: 18px 25px;
+            box-shadow: 0 0 40px rgba(0, 242, 254, 0.3);
             position: sticky; top: 0; z-index: 1000;
         }
+        .brand-logo { font-weight: 900; letter-spacing: 4px; text-shadow: 0 0 20px var(--cyan); font-size: 1.4rem; }
 
-        .balance-card {
-            background: rgba(0, 242, 254, 0.05); border: 1px solid var(--cyan);
-            border-radius: 12px; padding: 5px 15px; font-weight: 800; color: var(--cyan);
+        .balance-display {
+            background: rgba(0, 242, 254, 0.1); border: 1px solid var(--cyan);
+            border-radius: 50px; padding: 8px 20px; font-weight: 800; color: var(--cyan);
+            box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.2);
         }
 
+        /* 🧬 PANEL ARCHITECTURE */
         .ark-panel {
-            background: var(--glass); border-radius: 25px; padding: 30px;
-            margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            background: var(--glass); border-radius: 30px; padding: 35px;
+            margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .ark-panel:hover { border-color: var(--cyan); transform: translateY(-5px); }
+
+        .section-tag {
+            font-size: 0.8rem; font-weight: 900; color: var(--cyan);
+            text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 12px;
         }
 
-        .owner-console { border-left: 6px solid var(--neon-red) !important; }
+        /* ✍️ FORM STYLING */
+        .input-wrapper { margin-bottom: 22px; }
+        .input-label { font-size: 0.75rem; font-weight: 700; color: #888; margin-bottom: 8px; display: block; text-transform: uppercase; }
 
-        .tag { font-size: 0.7rem; font-weight: 900; letter-spacing: 2px; color: var(--cyan); margin-bottom: 15px; display: block; }
-
-        .input-group-ark { margin-bottom: 20px; }
-        .input-group-ark label { display: block; font-size: 0.75rem; color: #888; margin-bottom: 8px; font-weight: bold; }
-        
         .input-box {
-            background: rgba(0,0,0,0.4); border: 1px solid rgba(0, 242, 254, 0.2);
-            border-radius: 12px; color: #fff; padding: 14px; width: 100%; transition: 0.3s;
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(0, 242, 254, 0.25);
+            border-radius: 15px; color: #fff; padding: 16px; width: 100%;
+            font-weight: 600; transition: 0.3s;
         }
-        .input-box:focus { border-color: var(--cyan); outline: none; box-shadow: 0 0 15px rgba(0,242,254,0.1); }
+        .input-box:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 20px rgba(0, 242, 254, 0.15); }
 
-        .btn-ark {
+        /* 🚀 ACTION BUTTONS */
+        .btn-ark-master {
             background: linear-gradient(45deg, #00f2fe, #0061ff);
-            border: none; border-radius: 15px; padding: 16px; width: 100%;
-            font-weight: 900; letter-spacing: 1px; color: #fff; margin-top: 10px;
+            border: none; border-radius: 18px; padding: 18px; width: 100%;
+            font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+            box-shadow: 0 15px 30px rgba(0, 97, 255, 0.4);
         }
 
-        .btn-owner {
-            background: linear-gradient(45deg, #ff3131, #a70000);
-            border: none; border-radius: 15px; padding: 16px; width: 100%;
-            font-weight: 900; color: #fff;
+        .btn-ark-owner {
+            background: linear-gradient(45deg, #ff3131, #800000);
+            border: none; border-radius: 18px; padding: 18px; width: 100%;
+            font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+            box-shadow: 0 15px 30px rgba(255, 49, 49, 0.4);
         }
 
-        .key-box {
+        /* 📊 KEY DISPLAY SYSTEM */
+        .key-reveal {
             background: rgba(0,0,0,0.6); border: 2px dashed var(--cyan);
-            border-radius: 15px; padding: 20px; margin-top: 20px; display: none; text-align: center;
+            border-radius: 20px; padding: 25px; text-align: center; display: none; margin-top: 25px;
+            animation: fadeInDown 0.5s;
         }
+        .key-reveal.owner-style { border-color: var(--neon-red); }
+        .key-text { font-family: 'Monaco', monospace; font-size: 1.8rem; color: var(--cyan); font-weight: 900; letter-spacing: 2px; }
 
-        .pricing-info { font-size: 0.8rem; color: var(--cyan); margin-top: 10px; text-align: right; }
+        /* 📋 LOGS DESIGN */
+        .log-table-container { overflow-x: auto; border-radius: 15px; }
+        .ark-table { width: 100%; color: #e0e0e0; font-size: 0.9rem; }
+        .ark-table th { background: rgba(255,255,255,0.03); color: var(--cyan); padding: 20px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
+        .ark-table td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .price-tag { color: var(--cyan); font-weight: 800; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
     <nav class="ark-nav d-flex justify-content-between align-items-center">
-        <div class="fw-bold fs-5"><i class="bi bi-shield-check me-2"></i>ARK CORE <span style="color:var(--cyan)">GEN</span></div>
-        <div class="balance-card"><i class="bi bi-wallet2 me-2"></i><span id="displayBal">Syncing...</span></div>
+        <div class="brand-logo"><i class="bi bi-shield-shaded me-2"></i>ARK <span style="color:var(--cyan)">CORE</span></div>
+        <div class="balance-display shadow-sm">
+            <i class="bi bi-wallet2 me-2"></i><span id="balVal">LOADING...</span>
+        </div>
     </nav>
 
-    <div class="container py-4">
+    <div class="container py-5">
         
-        <div id="ownerSection" style="display: none;">
-            <div class="ark-panel owner-console">
-                <span class="tag" style="color: var(--neon-red);"><i class="bi bi-terminal-fill me-2"></i>OWNER PRIVILEGED CONSOLE</span>
-                <form id="ownerKeyForm">
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <div class="input-group-ark">
-                                <label>TARGET ROLE</label>
-                                <select id="genRole" class="input-box">
-                                    <option value="Reseller">Reseller</option>
-                                    <option value="Owner">Co-Owner</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="input-group-ark">
-                                <label>LOAD BALANCE (₹)</label>
-                                <input type="number" id="genBal" class="input-box" value="10000">
-                            </div>
-                        </div>
+        <div id="accessGenSection" class="ark-panel" style="border-left: 8px solid var(--neon-red);">
+            <div class="section-tag" style="color: var(--neon-red);"><i class="bi bi-gear-wide-connected"></i> Access Privilege Console</div>
+            <form id="accessKeyForm">
+                <div class="row">
+                    <div class="col-md-4 input-wrapper">
+                        <label class="input-label">Grant Role</label>
+                        <select id="targetRole" class="input-box">
+                            </select>
                     </div>
-                    <button type="submit" class="btn-owner">GENERATE ACCESS TOKEN</button>
-                </form>
-                <div id="ownerKeyResult" class="key-box" style="border-color: var(--neon-red);">
-                    <div class="small text-danger">TOKEN CREATED:</div>
-                    <div id="tokenOutput" class="fs-4 fw-bold text-white mt-1">---</div>
+                    <div class="col-md-4 input-wrapper">
+                        <label class="input-label">Assign Balance (₹)</label>
+                        <input type="number" id="targetBal" class="input-box" value="000" min="0">
+                    </div>
+                    <div class="col-md-4 input-wrapper">
+                        <label class="input-label">Key Quota</label>
+                        <input type="number" id="targetLimit" class="input-box" value="100">
+                    </div>
                 </div>
+                <button type="submit" class="btn-ark-owner">Create New Sub-Access Key</button>
+            </form>
+            <div id="accessKeyDisplay" class="key-reveal owner-style">
+                <span class="small text-danger fw-bold">MASTER TOKEN GENERATED:</span><br>
+                <span id="accessCodeText" class="key-text" style="color:var(--neon-red)">---</span>
             </div>
         </div>
 
         <div class="ark-panel">
-            <span class="tag"><i class="bi bi-cpu-fill me-2"></i>LICENSE GENERATION ENGINE</span>
+            <div class="section-tag"><i class="bi bi-cpu-fill"></i> License Management Engine</div>
             <form id="licenseForm">
-                <div class="input-group-ark">
-                    <label>GAME PACKAGE NAME (TARGET ID)</label>
-                    <input type="text" id="packageName" class="input-box" value="com.pubg.imobile" required>
+                <div class="input-wrapper">
+                    <label class="input-label">Game Package ID (API Linkage)</label>
+                    <input type="text" id="pkgID" class="input-box" placeholder="e.g. com.tencent.ig" value="com.pubg.imobile" required>
                 </div>
-
-                <div class="row g-3">
-                    <div class="col-6">
-                        <div class="input-group-ark">
-                            <label>DURATION PLAN</label>
-                            <select id="planDuration" class="input-box" onchange="calculatePrice()">
-                                <option value="10000">1 Month Plan</option>
-                                <option value="20000">2 Months Plan</option>
-                            </select>
-                        </div>
+                
+                <div class="row">
+                    <div class="col-md-6 input-wrapper">
+                        <label class="input-label">Subscription Plan</label>
+                        <select id="planType" class="input-box" onchange="updatePrice()">
+                            <option value="10000">1 Month Premium (₹10,000)</option>
+                            <option value="20000">2 Month Ultimate (₹20,000)</option>
+                        </select>
                     </div>
-                    <div class="col-6">
-                        <div class="input-group-ark">
-                            <label>DEVICE SLOT LIMIT</label>
-                            <select id="deviceCount" class="input-box" onchange="calculatePrice()">
-                                <option value="1">1 Device (Default)</option>
-                                <option value="2">2 Devices (+₹5,000)</option>
-                                <option value="3">3 Devices (+₹10,000)</option>
-                            </select>
-                        </div>
+                    <div class="col-md-6 input-wrapper">
+                        <label class="input-label">Device Slots</label>
+                        <select id="deviceLimit" class="input-box" onchange="updatePrice()">
+                            <option value="1">1 Device (Base)</option>
+                            <option value="2">2 Devices (+₹5,000)</option>
+                            <option value="3">3 Devices (+₹10,000)</option>
+                        </select>
                     </div>
                 </div>
 
-                <div id="totalPriceDisplay" class="pricing-info">Est. Cost: ₹10,000</div>
-                <button type="submit" class="btn-ark mt-3">CONFIRM & GENERATE MASTER KEY</button>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="small text-secondary fw-bold">TOTAL ESTIMATED BILL: <span id="totalPrice" class="price-tag">₹1,00,000</span></div>
+                    <button type="submit" style="width: auto; padding: 15px 40px;" class="btn-ark-master">Authorize Key</button>
+                </div>
             </form>
 
-            <div id="licenseResult" class="key-box">
-                <div class="small text-info">KEY ACTIVATED SUCCESSFULLY:</div>
-                <div id="finalKey" class="fs-3 fw-bold text-white mt-1">ARK-XXXX-XXXX</div>
-                <button class="btn btn-sm btn-outline-info mt-3 rounded-pill" onclick="copyKey()">COPY KEY</button>
+            <div id="licenseDisplay" class="key-reveal">
+                <span class="small text-info fw-bold">SYSTEM AUTHORIZED KEY:</span><br>
+                <span id="licenseCodeText" class="key-text">---</span>
+                <div class="mt-3"><button class="btn btn-sm btn-outline-info px-4 rounded-pill" onclick="copyValue('licenseCodeText')">COPY KEY</button></div>
             </div>
         </div>
 
         <div class="ark-panel">
-            <span class="tag"><i class="bi bi-clock-history me-2"></i>RECENT GENERATIONS</span>
-            <div class="table-responsive">
-                <table class="table table-dark table-borderless align-middle m-0" style="font-size: 0.85rem;">
+            <div class="section-tag text-secondary"><i class="bi bi-activity"></i> Live System Logs</div>
+            <div class="log-table-container">
+                <table class="ark-table">
                     <thead>
-                        <tr class="text-secondary small">
-                            <th>KEY IDENTITY</th>
-                            <th>PACKAGE</th>
-                            <th>DEVICES</th>
-                            <th>STATUS</th>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Package</th>
+                            <th>Type</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody id="logTableBody"></tbody>
+                    <tbody id="logItems">
+                        </tbody>
                 </table>
             </div>
         </div>
     </div>
 
     <script>
-        // FIREBASE INITIALIZATION
+        // 📡 FIREBASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyA5u_ExHIn25nKFVBK-vAYqJ7Z5zcy63nQ",
             authDomain: "arkcore-f92a6.firebaseapp.com",
@@ -187,111 +211,110 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // MASTER SESSION CONFIG
-        const USER_ID = "-ONyC_2D2P8yK5rLh2_G"; 
-        let userRole = "";
-        let currentBalance = 0;
+        // 🆔 USER CONTEXT
+        const UID = "-ONyC_2D2P8yK5rLh2_G";
+        let uRole = "";
+        let uBalance = 0;
 
-        // 🔄 REAL-TIME SYNC & PERMISSION FIX
-        db.ref('Users/' + USER_ID).on('value', (snap) => {
-            if(snap.exists()) {
-                const data = snap.val();
-                userRole = data.role;
-                currentBalance = parseInt(data.balance || 0);
+        // 🔄 INSTANT SYNC ENGINE
+        db.ref('Users/' + UID).on('value', (snap) => {
+            if(snap.exists()){
+                const d = snap.val();
+                uRole = d.role;
+                uBalance = parseInt(d.balance || 0);
 
-                // FIX: Visibility & Display Logic
-                if(userRole === "Owner") {
-                    document.getElementById('displayBal').innerText = "Unlimited";
-                    document.getElementById('ownerSection').style.display = "block";
+                // UI Visibility Updates
+                const balEl = document.getElementById('balVal');
+                const roleSel = document.getElementById('targetRole');
+                
+                if(uRole === "Owner"){
+                    balEl.innerText = "UNLIMITED";
+                    roleSel.innerHTML = '<option value="Reseller">Reseller</option><option value="Owner">Co-Owner</option>';
                 } else {
-                    document.getElementById('displayBal').innerText = "₹" + currentBalance.toLocaleString();
-                    document.getElementById('ownerSection').style.display = "none";
+                    balEl.innerText = "₹" + uBalance.toLocaleString();
+                    roleSel.innerHTML = '<option value="User">Standard User</option>';
                 }
             }
         });
 
-        // 💰 DYNAMIC PRICING LOGIC
-        function calculatePrice() {
-            const basePlan = parseInt(document.getElementById('planDuration').value);
-            const extraDevices = parseInt(document.getElementById('deviceCount').value) - 1;
-            const finalPrice = basePlan + (extraDevices * 5000);
-            document.getElementById('totalPriceDisplay').innerText = "Total Cost: ₹" + finalPrice.toLocaleString();
-            return finalPrice;
+        // 💰 PRICING CALCULATOR
+        function updatePrice() {
+            const base = parseInt(document.getElementById('planType').value);
+            const dev = (parseInt(document.getElementById('deviceLimit').value) - 1) * 5000;
+            const total = base + dev;
+            document.getElementById('totalPrice').innerText = "₹" + total.toLocaleString();
+            return total;
         }
 
-        // 🚀 LICENSE GENERATION logic
-        document.getElementById('licenseForm').onsubmit = (e) => {
+        // 🚀 LICENSE GENERATION LOGIC
+        document.getElementById('licenseForm').onsubmit = function(e) {
             e.preventDefault();
-            const cost = calculatePrice();
+            const cost = updatePrice();
 
-            // FIX: Owner bypasses balance check
-            if (userRole !== "Owner" && currentBalance < cost) {
-                alert("ACCESS DENIED: Insufficient Balance. Please top up.");
+            if(uRole !== "Owner" && uBalance < cost) {
+                alert("🚨 INSUFFICIENT BALANCE! Required: ₹" + cost.toLocaleString());
                 return;
             }
 
-            const generatedKey = "ARK-" + Math.random().toString(36).substring(2, 14).toUpperCase();
+            const key = "ARK-" + Math.random().toString(36).substring(2, 14).toUpperCase();
             const batch = {};
 
-            // Deduct balance ONLY if NOT owner
-            if (userRole !== "Owner") {
-                batch['/Users/' + USER_ID + '/balance'] = currentBalance - cost;
+            if(uRole !== "Owner") {
+                batch['/Users/' + UID + '/balance'] = uBalance - cost;
             }
 
-            batch['/Keys/' + generatedKey] = {
-                key: generatedKey,
-                package: document.getElementById('packageName').value,
-                devices: document.getElementById('deviceCount').value,
-                duration: document.getElementById('planDuration').options[document.getElementById('planDuration').selectedIndex].text,
-                status: "active",
-                createdBy: USER_ID,
-                createdAt: firebase.database.ServerValue.TIMESTAMP
+            batch['/Keys/' + key] = {
+                key: key,
+                package: document.getElementById('pkgID').value,
+                devices: document.getElementById('deviceLimit').value,
+                cost: cost,
+                creator: UID,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
             db.ref().update(batch).then(() => {
-                document.getElementById('finalKey').innerText = generatedKey;
-                document.getElementById('licenseResult').style.display = "block";
-                alert("Success: License Activated");
+                document.getElementById('licenseCodeText').innerText = key;
+                document.getElementById('licenseDisplay').style.display = 'block';
             });
         };
 
-        // 🛑 OWNER: ACCESS KEY TOKEN GENERATOR
-        document.getElementById('ownerKeyForm').onsubmit = (e) => {
+        // 🛑 PRIVILEGE KEY GENERATION
+        document.getElementById('accessKeyForm').onsubmit = function(e) {
             e.preventDefault();
-            const token = "TOKEN-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+            const token = "ACC-" + Math.random().toString(36).substring(2, 10).toUpperCase();
             
             db.ref('Secrets').push({
                 code: token,
-                role: document.getElementById('genRole').value,
-                balance: document.getElementById('genBal').value,
+                role: document.getElementById('targetRole').value,
+                balance: document.getElementById('targetBal').value,
+                limit: document.getElementById('targetLimit').value,
                 status: "unused",
-                issuedBy: USER_ID
+                issuedBy: UID
             }).then(() => {
-                document.getElementById('tokenOutput').innerText = token;
-                document.getElementById('ownerKeyResult').style.display = "block";
+                document.getElementById('accessCodeText').innerText = token;
+                document.getElementById('accessKeyDisplay').style.display = 'block';
             });
         };
 
-        // 📋 SYNC LOGS TABLE
+        // 📋 LOG SYNC
         db.ref('Keys').limitToLast(6).on('value', (snap) => {
-            const table = document.getElementById('logTableBody');
-            table.innerHTML = "";
-            snap.forEach(child => {
-                const k = child.val();
-                table.innerHTML += `
-                    <tr>
-                        <td class="text-info">${k.key}</td>
-                        <td>${k.package}</td>
-                        <td class="text-center">${k.devices}</td>
-                        <td><span class="badge bg-success">Active</span></td>
-                    </tr>`;
+            const list = document.getElementById('logItems');
+            list.innerHTML = "";
+            snap.forEach(c => {
+                const item = c.val();
+                list.innerHTML += `<tr>
+                    <td class="fw-bold">${item.key}</td>
+                    <td>${item.package}</td>
+                    <td><span class="badge bg-primary">LICENSE</span></td>
+                    <td><span class="text-success">● ACTIVE</span></td>
+                </tr>`;
             });
         });
 
-        function copyKey() {
-            const val = document.getElementById('finalKey').innerText;
+        function copyValue(id) {
+            const val = document.getElementById(id).innerText;
             navigator.clipboard.writeText(val);
-            alert("Key Copied!");
+            alert("COPIED!");
         }
     </script>
 </body>
