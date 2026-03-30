@@ -3,74 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Arkcore - Sign Up</title>
+    <title>ARK CORE - Secure Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <style>
-        :root { --neon-blue: #00f2fe; --card-bg: #0d1630; }
-        body { 
-            background: radial-gradient(circle at center, #0a1128 0%, #000411 100%);
-            color: #fff; min-height: 100vh; display: flex; align-items: center; 
-            justify-content: center; margin: 0; padding: 20px; font-family: sans-serif;
+        :root { 
+            --neon-blue: #0a47d0; /* Original Dark Blue Glow */
+            --dark-blue: #010409;
+            --card-bg: rgba(7, 15, 43, 0.7);
         }
-        .container { width: 100%; max-width: 400px; }
-        .card { 
-            background: var(--card-bg); border: 2px solid var(--neon-blue); 
-            border-radius: 25px; box-shadow: 0 0 20px rgba(0, 242, 254, 0.3); padding: 40px 25px;
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--dark-blue);
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; color: #fff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .neon-text {
-            color: #fff; text-shadow: 0 0 10px var(--neon-blue);
-            font-weight: 800; font-size: 2rem; text-align: center; letter-spacing: 3px;
+
+        /* 👑 ELITE HEADER - Matched Dark Blue Glow */
+        .elite-header {
+            background-color: #090e1a;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            border-bottom: 1px solid rgba(10, 71, 208, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
         }
-        .form-control {
-            background: #040816; border: 1px solid #1a254a; color: #fff;
-            height: 55px; border-radius: 12px; margin-bottom: 15px; font-size: 16px;
+
+        .header-logo {
+            color: #fff; font-size: 1.4rem; font-weight: 800;
+            display: flex; align-items: center; letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
         }
-        .form-control:focus {
-            background: #040816; color: #fff; border-color: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue);
+
+        .header-logo i { margin-right: 12px; font-size: 1.6rem; filter: drop-shadow(0 0 8px var(--neon-blue)); }
+
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+        .login-container { width: 100%; max-width: 400px; z-index: 10; position: relative; margin-top: 60px; }
+
+        .glass-card {
+            background: var(--card-bg); backdrop-filter: blur(25px);
+            border: 1px solid rgba(10, 71, 208, 0.35); border-radius: 35px;
+            padding: 45px 35px; box-shadow: 0 0 50px rgba(10, 71, 208, 0.2); text-align: center;
         }
-        .btn-neon {
-            background: linear-gradient(45deg, #4facfe, #00f2fe); border: none;
-            height: 55px; border-radius: 12px; color: #fff; font-weight: bold; width: 100%; margin-top: 10px;
-            cursor: pointer;
+
+        .brand-logo {
+            font-size: 2.5rem; font-weight: 900; letter-spacing: 5px;
+            background: linear-gradient(to right, #fff, #1e3a8a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(10, 71, 208, 0.6); margin-bottom: 5px;
         }
-        .footer-link { text-align: center; margin-top: 25px; }
-        .text-neon-link { color: var(--neon-blue); text-decoration: none; font-weight: bold; }
-        .error-msg { color: #ff4b2b; font-size: 12px; display: none; text-align: center; margin-bottom: 10px; }
+
+        .input-field {
+            background: rgba(0, 0, 0, 0.5) !important; border: 1px solid rgba(10, 71, 208, 0.3) !important;
+            border-radius: 15px !important; height: 50px; color: #fff !important; margin-bottom: 15px;
+        }
+
+        .signup-btn {
+            background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%);
+            border: none; border-radius: 15px; height: 55px; width: 100%;
+            color: white; font-weight: bold; font-size: 1.1rem; letter-spacing: 2px;
+            box-shadow: 0 5px 15px rgba(10, 71, 208, 0.3); margin-top: 10px;
+        }
+
+        #status-text {
+            position: fixed; bottom: 20%; width: 100%; text-align: center;
+            color: #fff; z-index: 20; display: none; font-weight: bold;
+            text-shadow: 0 0 15px var(--neon-blue); font-size: 1.2rem;
+        }
     </style>
 </head>
-<body>
-<div class="container">
-    <div class="card">
-        <h2 class="neon-text mb-5">SIGN UP</h2>
-        <div id="errMsg" class="error-msg">Invalid Secret Code!</div>
-        <form id="signupForm">
-            <input type="text" id="regUser" class="form-control" placeholder="Choose Username" required>
-            <input type="password" id="regPass" class="form-control" placeholder="Choose Password" required>
-            <input type="text" id="secretCode" class="form-control" placeholder="Secret Code (5 Digits)" maxlength="5" required>
-            <button type="submit" class="btn btn-neon">CREATE ACCOUNT</button>
-        </form>
-        <div class="footer-link">
-            <p style="color: #5c6e91; margin-bottom: 5px;">Already have an account?</p>
-            <a href="login.html" class="text-neon-link">LOGIN HERE</a>
+<body oncontextmenu="return false;">
+
+    <div class="elite-header">
+        <div class="header-logo"><i class="bi bi-fire"></i> ARK CORE</div>
+        <div style="font-size: 1.5rem; color: #fff;"><i class="bi bi-grid-3x3-gap-fill"></i></div>
+    </div>
+
+    <div id="particles-js"></div>
+
+    <div class="login-container" id="signupBox">
+        <div class="glass-card">
+            <h1 class="brand-logo">ARK CORE</h1>
+            <p style="font-size: 0.65rem; color: #1e3a8a; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; font-weight: 600;">NEW DEVICE REGISTRATION</p>
+            
+            <form id="regForm">
+                <input type="text" id="regUser" class="form-control input-field" placeholder="Create Username" required autocomplete="off">
+                <input type="password" class="form-control input-field" placeholder="Create Password" required>
+                <input type="text" class="form-control input-field" placeholder="Access Key" required>
+                <button type="submit" class="signup-btn">REGISTER SYSTEM</button>
+            </form>
+            
+            <div style="margin-top: 20px; font-size: 0.8rem; color: rgba(255,255,255,0.4);">
+                Already registered? <a href="login.html" style="color: #1e40af; text-decoration: none; font-weight: bold;">Login Access</a>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const code = document.getElementById('secretCode').value;
-        const user = document.getElementById('regUser').value;
+    <div id="status-text">INITIALIZING SECURE CORE...</div>
 
-        // Logic: Secret code 5 digit ka hona chahiye
-        if(code.length === 5) {
-            alert('Account Created Successfully!');
-            localStorage.setItem('activeUser', user);
-            window.location.href = "login.html";
-        } else {
-            document.getElementById('errMsg').style.display = 'block';
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 70 },
+                "color": { "value": "#0a47d0" },
+                "size": { "value": 8, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#0a47d0", "opacity": 0.4 },
+                "move": { "enable": true, "speed": 2 }
+            }
+        });
+
+        // 🔊 Professional Female Voice Function
+        function playProfessionalVoice(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            const voices = window.speechSynthesis.getVoices();
+            
+            // Professional Female Voice Settings
+            speech.lang = 'hi-IN';
+            speech.pitch = 1.3; // Thoda high pitch for clear female voice
+            speech.rate = 1.0;  // Normal professional speed
+            speech.volume = 1.0;
+
+            window.speechSynthesis.speak(speech);
         }
-    });
-</script>
+
+        document.getElementById('regForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('regUser').value;
+            const signupBox = document.getElementById('signupBox');
+            const statusText = document.getElementById('status-text');
+
+            signupBox.style.display = 'none';
+            statusText.style.display = 'block';
+
+            // Voice trigger on Click
+            const welcomeMsg = `Hello ${user}. Welcome to ARK CORE Panel. Aapka account successfully register ho gaya hai. Ab aap elite features access kar sakte hain.`;
+            playProfessionalVoice(welcomeMsg);
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 6000);
+        });
+    </script>
 </body>
 </html>

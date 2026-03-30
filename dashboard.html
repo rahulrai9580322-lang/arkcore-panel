@@ -168,7 +168,7 @@
                     <div id="userInitials" class="avatar me-3" style="width: 40px; height: 40px; background: var(--neon-blue); border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold;">U</div>
                     <div>
                         <div class="small fw-bold" id="userNameDisplay">User</div>
-                        <a href="logout.html" style="font-size: 10px; color: #ef4444; text-decoration: none;">LOGOUT SESSION</a>
+                        <a href="javascript:void(0)" onclick="logoutSession()" style="font-size: 10px; color: #ef4444; text-decoration: none;">LOGOUT SESSION</a>
                     </div>
                 </div>
             </div>
@@ -223,7 +223,18 @@
     </div>
 
     <script>
-        // --- AAPKA ORIGINAL CODE (TOUCH BHI NAHI KIYA) ---
+        // --- 🛡️ SECURITY GUARD: Check login status immediately ---
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = "login.html";
+        }
+
+        function logoutSession() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('activeUser');
+            window.location.href = "login.html";
+        }
+
+        // --- AAPKA ORIGINAL CODE START ---
         let currentUser = {
             role: "Owner", 
             name: "Keshav",
@@ -251,7 +262,7 @@
         }
         updateUI(currentUser); // Pehle static data chalega
 
-        // --- FIREBASE EXTRA LOGIC (SIRF DATA OVERWRITE KARNE KE LIYE) ---
+        // --- FIREBASE EXTRA LOGIC ---
         const firebaseConfig = {
             apiKey: "AIzaSyA5u_ExHIn25nKFVBK-vAYqJ7Z5zcy63nQ",
             authDomain: "arkcore-f92a6.firebaseapp.com",

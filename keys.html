@@ -36,13 +36,19 @@
         /* Loader & Error */
         #loader { text-align: center; padding: 50px; color: #00f2fe; }
         #errorMsg { color: #ff3131; text-align: center; padding: 20px; display: none; }
+
+        /* Logout Style */
+        .logout-btn { color: #ff3131; cursor: pointer; font-size: 0.8rem; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div class="header-title"><i class="bi bi-key-fill"></i> KEYS LIST</div>
-        <i class="bi bi-grid-3x3-gap-fill fs-3"></i>
+        <div class="d-flex align-items-center gap-3">
+            <a href="javascript:void(0)" onclick="logoutSession()" class="logout-btn">LOGOUT</a>
+            <i class="bi bi-grid-3x3-gap-fill fs-3" style="cursor: pointer;" onclick="window.location.href='dashboard.html'"></i>
+        </div>
     </div>
 
     <div class="active-title">ALL SUBSCRIPTIONS</div>
@@ -52,7 +58,19 @@
     <div id="keysContainer"></div>
 
     <script>
-        // FIREBASE CONFIG
+        // --- 🛡️ SECURITY GUARD: Bina login ke koi andar nahi aayega ---
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = "login.html";
+        }
+
+        function logoutSession() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('activeUser');
+            window.location.href = "login.html";
+        }
+        // ----------------------------------------------------------
+
+        // FIREBASE CONFIG (Aapka Original Config)
         const firebaseConfig = {
             apiKey: "AIzaSyA5u_ExHIn25nKFVBK-vAYqJ7Z5zcy63nQ",
             authDomain: "arkcore-f92a6.firebaseapp.com",
@@ -65,7 +83,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Loading Data
+        // Loading Data (Aapka Original Logic)
         db.ref('keys').on('value', (snapshot) => {
             const container = document.getElementById('keysContainer');
             const loader = document.getElementById('loader');

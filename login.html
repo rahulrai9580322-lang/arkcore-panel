@@ -3,67 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Arkcore - Login</title>
+    <title>ARK CORE - Secure Access</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
-        :root { --neon-blue: #00f2fe; --card-bg: #0d1630; }
-        body { 
-            background: radial-gradient(circle at center, #0a1128 0%, #000411 100%);
-            color: #fff; min-height: 100vh; display: flex; align-items: center; 
-            justify-content: center; margin: 0; padding: 20px; font-family: sans-serif;
+        :root { 
+            --neon-blue: #0a47d0; /* deep dark blue, not cyan */
+            --dark-blue: #010409;
+            --card-bg: rgba(7, 15, 43, 0.7);
         }
-        .container { width: 100%; max-width: 400px; }
-        .card { 
-            background: var(--card-bg); border: 2px solid var(--neon-blue); 
-            border-radius: 25px; box-shadow: 0 0 20px rgba(0, 242, 254, 0.3); padding: 40px 25px;
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--dark-blue);
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; color: #fff;
+            display: flex; align-items: center; justify-content: center;
         }
-        .neon-text {
-            color: #fff; text-shadow: 0 0 10px var(--neon-blue);
-            font-weight: 800; font-size: 2rem; text-align: center; letter-spacing: 3px;
+
+        /* 🔵 Interactive Particles Background */
+        #particles-js {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: 1;
+            background-color: #010409;
         }
-        .form-control {
-            background: #040816; border: 1px solid #1a254a; color: #fff;
-            height: 55px; border-radius: 12px; margin-bottom: 20px; font-size: 16px;
+
+        .login-container {
+            width: 100%; max-width: 400px;
+            z-index: 10; position: relative;
         }
-        .form-control:focus {
-            background: #040816; color: #fff; border-color: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue);
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(10, 71, 208, 0.25); /* dark blue border */
+            border-radius: 35px;
+            padding: 50px 35px;
+            box-shadow: 0 0 50px rgba(10, 71, 208, 0.15); /* subtle dark blue glow */
+            text-align: center;
+            animation: fadeInCard 1.2s ease-out;
         }
-        .btn-neon {
-            background: linear-gradient(45deg, #4facfe, #00f2fe); border: none;
-            height: 55px; border-radius: 12px; color: #fff; font-weight: bold; width: 100%;
-            cursor: pointer; transition: 0.3s;
+
+        @keyframes fadeInCard {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .btn-neon:hover { transform: scale(1.02); box-shadow: 0 0 15px var(--neon-blue); }
-        .footer-link { text-align: center; margin-top: 25px; }
-        .text-neon-link { color: var(--neon-blue); text-decoration: none; font-weight: bold; }
+
+        .brand-logo {
+            font-size: 2.8rem; font-weight: 900; letter-spacing: 5px;
+            background: linear-gradient(to right, #fff, #1e3a8a); /* deep blue gradient */
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(10, 71, 208, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .brand-sub {
+            font-size: 0.7rem; color: #1e3a8a; /* deep blue */
+            letter-spacing: 4px; text-transform: uppercase;
+            margin-bottom: 35px; opacity: 0.9; font-weight: 600;
+        }
+
+        .input-field {
+            background: rgba(0, 0, 0, 0.5) !important;
+            border: 1px solid rgba(10, 71, 208, 0.3) !important; /* dark blue border */
+            border-radius: 15px !important; height: 55px; color: #fff !important;
+            margin-bottom: 20px; transition: 0.4s;
+        }
+
+        .input-field:focus {
+            border-color: var(--neon-blue) !important;
+            box-shadow: 0 0 20px rgba(10, 71, 208, 0.4) !important;
+        }
+
+        .login-btn {
+            background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%); /* dark blue gradient */
+            border: none; border-radius: 15px; height: 55px; width: 100%;
+            color: white; font-weight: bold; font-size: 1.1rem;
+            letter-spacing: 2px; transition: 0.4s;
+            box-shadow: 0 5px 15px rgba(10, 71, 208, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px #1e40af;
+            letter-spacing: 4px;
+        }
+
+        #status-text {
+            position: fixed; bottom: 20%; width: 100%; text-align: center;
+            color: #1e40af; z-index: 20; display: none;
+            font-weight: bold; text-shadow: 0 0 10px #1e40af;
+        }
     </style>
 </head>
-<body>
-<div class="container">
-    <div class="card">
-        <h2 class="neon-text mb-5">ARKCORE</h2>
-        <form id="loginForm">
-            <input type="text" id="user" class="form-control" placeholder="Username" required>
-            <input type="password" id="pass" class="form-control" placeholder="Password" required>
-            <button type="submit" class="btn btn-neon">LOGIN</button>
-        </form>
-        <div class="footer-link">
-            <p style="color: #5c6e91; margin-bottom: 5px;">Don't have an account?</p>
-            <a href="signup.html" class="text-neon-link">CREATE A NEW ACCOUNT</a>
+<body oncontextmenu="return false;">
+
+    <div id="particles-js"></div>
+
+    <div class="login-container" id="loginBox">
+        <div class="glass-card">
+            <h1 class="brand-logo">ARK CORE</h1>
+            <p class="brand-sub">Elite BGMI Core System</p>
+            
+            <form id="authForm">
+                <input type="text" id="username" class="form-control input-field" placeholder="Username" required autocomplete="off">
+                <input type="password" id="password" class="form-control input-field" placeholder="Access Password" required>
+                <button type="submit" class="btn login-btn">LOGIN SYSTEM</button>
+            </form>
+            
+            <div class="mt-4" style="font-size: 0.7rem; color: rgba(255,255,255,0.3); letter-spacing: 1px;">
+                SECURITY STATUS: <span style="color: #1e3a8a;">ENCRYPTED</span>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const user = document.getElementById('user').value;
-        // Simple logic for testing, real life mein ye backend se verify hoga
-        if(user) {
-            localStorage.setItem('activeUser', user);
-            window.location.href = "dashboard.html";
+    <div id="status-text">AUTHENTICATING...</div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // ✅ Particles initialization - DARK THEME & BIG DOTS
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 70, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#0a47d0" }, /* deep blue dots */
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.8, "random": false }, /* less transparent */
+                "size": { "value": 10, "random": true }, /* BIG DOTS - average size ~10px */
+                "line_linked": { 
+                    "enable": true, "distance": 180, 
+                    "color": "#0a47d0", "opacity": 0.3, "width": 2 /* thicker lines */
+                },
+                "move": { 
+                    "enable": true, "speed": 1.5, "direction": "none", 
+                    "random": false, "straight": false, "out_mode": "out", "bounce": false 
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": { 
+                    "onhover": { "enable": true, "mode": "grab" }, 
+                    "onclick": { "enable": true, "mode": "push" } 
+                },
+                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } }
+            },
+            "retina_detect": true
+        });
+
+        function playVoice(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'hi-IN';
+            speech.pitch = 1.2;
+            speech.rate = 0.9;
+            window.speechSynthesis.speak(speech);
         }
-    });
-</script>
+
+        document.getElementById('authForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const loginBox = document.getElementById('loginBox');
+            const statusText = document.getElementById('status-text');
+
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('activeUser', user);
+
+            loginBox.style.transition = "0.6s";
+            loginBox.style.opacity = '0';
+            loginBox.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                loginBox.style.display = 'none';
+                statusText.style.display = 'block';
+                
+                const msg = `Welcome To ARK CORE, ${user}. Aapka swagat hai. Yeh BGMI high level Hacking software hai. Hamara ARK CORE sabse best hai.`;
+                playVoice(msg);
+
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 7500);
+            }, 600);
+        });
+    </script>
 </body>
 </html>
