@@ -3,250 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ARK CORE - Key Generator Pro v2.0</title>
+    <title>ARK CORE | Enterprise Access Control</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Rajdhani:wght@300;700&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
+        /* 🎨 ADVANCED CSS ARCHITECTURE */
         :root {
-            --neon-blue: #00f2fe;
-            --bg-dark: #050a18;
-            --card-bg: rgba(13, 22, 48, 0.9);
-            --sidebar-bg: #040816;
-            --neon-red: #ef4444;
+            --neon-cyan: #00f2fe;
+            --neon-blue: #0061ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff3131;
             --neon-green: #00ff88;
-            --gold: #ffcf40;
+            --gold: #ffce00;
+            --dark-deep: #020610;
+            --glass-bg: rgba(10, 18, 42, 0.95);
+            --panel-shadow: 0 0 30px rgba(0, 242, 254, 0.15);
         }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
-            background: radial-gradient(circle at center, #0a1128 0%, #000411 100%);
-            color: #fff;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--dark-deep);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 97, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(188, 19, 254, 0.1) 0%, transparent 40%);
+            color: #e0e6ed;
+            font-family: 'Rajdhani', sans-serif;
             margin: 0; min-height: 100vh;
             overflow-x: hidden;
         }
 
         /* 🌌 BACKGROUND ANIMATION */
-        .bg-glow {
+        .grid-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-            opacity: 0.15; z-index: -1;
+            background-image: linear-gradient(rgba(0, 242, 254, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 242, 254, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -2;
         }
 
-        /* 👑 ELITE NAVBAR */
-        .navbar {
-            background: rgba(13, 22, 48, 0.95);
-            backdrop-filter: blur(15px);
-            border-bottom: 2px solid var(--neon-blue);
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.3);
-            padding: 15px 0;
-        }
-        .brand-name { font-weight: 900; letter-spacing: 4px; text-shadow: 0 0 15px var(--neon-blue); font-size: 1.6rem; }
-
-        /* 💰 BALANCE DASHBOARD CARD */
-        .balance-box {
-            background: linear-gradient(135deg, rgba(0, 242, 254, 0.1) 0%, rgba(0, 97, 255, 0.1) 100%);
-            border: 1px solid var(--neon-blue);
-            border-radius: 15px; padding: 10px 25px;
-            display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
-        }
-        .balance-amount { font-size: 1.4rem; font-weight: 900; color: var(--neon-green); text-shadow: 0 0 10px rgba(0, 255, 136, 0.4); }
-
-        /* 🛠️ SIDEBAR */
-        .offcanvas { background-color: var(--sidebar-bg); border-left: 4px solid var(--neon-blue); width: 300px !important; }
-        .menu-item { 
-            padding: 18px 25px; display: flex; align-items: center; color: #8fa3cc; 
-            text-decoration: none; transition: 0.4s; border-radius: 15px; margin: 10px 15px;
-            border: 1px solid transparent; font-weight: 600;
-        }
-        .menu-item i { font-size: 1.3rem; margin-right: 15px; }
-        .menu-item:hover, .menu-item.active { 
-            color: var(--neon-blue); background: rgba(0, 242, 254, 0.15); 
-            border-color: rgba(0, 242, 254, 0.4); box-shadow: 0 0 20px rgba(0, 242, 254, 0.1);
+        /* 🔝 PREMIUM NAVIGATION */
+        .ark-nav {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--neon-cyan); padding: 15px 30px;
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
         }
 
-        /* 🧬 GENERATOR CARD */
-        .gen-card {
-            background: var(--card-bg); border-radius: 35px; padding: 40px;
-            margin-bottom: 35px; border: 1px solid rgba(0, 242, 254, 0.15);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            backdrop-filter: blur(20px); position: relative; overflow: hidden;
+        .brand-title {
+            font-family: 'Orbitron', sans-serif; font-weight: 900;
+            font-size: 1.6rem; letter-spacing: 5px;
+            background: linear-gradient(to right, #fff, var(--neon-cyan));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
         }
 
-        .form-label { color: var(--neon-blue); font-weight: 800; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px; }
-        .form-control-custom {
-            background: rgba(0,0,0,0.5); border: 1px solid rgba(0, 242, 254, 0.3);
-            color: #fff; border-radius: 16px; padding: 15px; font-weight: 600;
-        }
-        .form-control-custom:focus {
-            background: rgba(0,0,0,0.7); border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); color: #fff;
+        .bal-container {
+            background: rgba(0, 242, 254, 0.08); border: 1px solid var(--neon-cyan);
+            border-radius: 12px; padding: 8px 20px; color: var(--neon-cyan);
+            font-weight: 800; font-family: 'Orbitron', sans-serif;
+            box-shadow: inset 0 0 15px rgba(0, 242, 254, 0.1);
         }
 
-        /* 🚀 ACTION BUTTON */
-        .btn-ark {
-            background: linear-gradient(45deg, #00f2fe, #0061ff);
-            border: none; border-radius: 18px; padding: 18px;
-            font-weight: 900; text-transform: uppercase; letter-spacing: 3px;
-            transition: 0.4s; box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4);
-            position: relative; overflow: hidden;
+        /* 📋 SIDEBAR & MENU */
+        .offcanvas { background: #040816; border-left: 2px solid var(--neon-cyan); width: 320px !important; }
+        .nav-link-custom {
+            padding: 18px 25px; margin: 10px 15px; border-radius: 15px;
+            color: #8fa3cc; text-decoration: none; display: flex; align-items: center;
+            transition: all 0.4s; border: 1px solid transparent; font-weight: 600;
         }
-        .btn-ark:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0, 242, 254, 0.6); }
-        .btn-ark:active { transform: scale(0.95); }
-
-        /* 💎 RESULT BOX */
-        .result-box {
-            background: rgba(0, 242, 254, 0.08); border: 2px dashed var(--neon-blue);
-            border-radius: 20px; padding: 25px; text-align: center;
-            display: none; margin-top: 25px; animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-
-        .key-text { 
-            font-family: 'Courier New', monospace; font-size: 1.8rem; 
-            color: var(--neon-blue); font-weight: 900; text-shadow: 0 0 15px var(--neon-blue);
-            display: block; margin: 15px 0; letter-spacing: 2px;
+        .nav-link-custom:hover, .nav-link-custom.active {
+            background: linear-gradient(90deg, rgba(0, 242, 254, 0.1), transparent);
+            color: var(--neon-cyan); border-color: rgba(0, 242, 254, 0.3);
+            transform: translateX(10px);
         }
 
-        /* 📜 HISTORY TABLE */
-        .history-card {
-            background: rgba(4, 8, 22, 0.85); border-radius: 30px; padding: 30px;
-            border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        /* 🛡️ PANEL ARCHITECTURE */
+        .ark-card {
+            background: var(--glass-bg); border-radius: 30px; padding: 40px;
+            margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--panel-shadow); position: relative; overflow: hidden;
         }
-        .table { color: #e6edf3; border-color: rgba(255,255,255,0.05); }
-        .table thead th { border: none; color: var(--neon-blue); text-transform: uppercase; font-size: 0.7rem; padding: 20px; }
-        .table tbody td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
 
-        .badge-status { border-radius: 8px; padding: 6px 12px; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; }
-        .bg-unused { background: rgba(0, 255, 136, 0.15); color: var(--neon-green); border: 1px solid var(--neon-green); }
+        .ark-card::after {
+            content: ''; position: absolute; top: 0; right: 0;
+            width: 150px; height: 150px;
+            background: radial-gradient(circle, rgba(0, 242, 254, 0.05), transparent 70%);
+        }
+
+        .owner-border { border-top: 5px solid var(--neon-red); border-left: 1px solid var(--neon-red); }
+
+        .section-header {
+            font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 800;
+            margin-bottom: 30px; display: flex; align-items: center; gap: 15px;
+        }
+
+        /* ✍️ FORM ELEMENTS */
+        .field-label {
+            font-size: 0.8rem; font-weight: 700; color: var(--neon-cyan);
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; display: block;
+        }
+
+        .ark-input {
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 15px; padding: 16px; color: #fff; width: 100%;
+            font-weight: 600; font-size: 1rem; transition: 0.3s;
+        }
+        .ark-input:focus {
+            outline: none; border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.1); background: rgba(0,0,0,0.6);
+        }
+
+        /* 🚀 MASTER BUTTONS */
+        .btn-ark-glow {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-cyan));
+            border: none; border-radius: 18px; padding: 20px; width: 100%;
+            color: #fff; font-family: 'Orbitron', sans-serif; font-weight: 900;
+            letter-spacing: 3px; text-transform: uppercase;
+            box-shadow: 0 10px 30px rgba(0, 97, 255, 0.3); transition: 0.4s;
+        }
+        .btn-ark-glow:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0, 242, 254, 0.5); }
+
+        .btn-owner-glow {
+            background: linear-gradient(45deg, #ef4444, #7f1d1d);
+            border: none; border-radius: 18px; padding: 20px; width: 100%;
+            color: #fff; font-family: 'Orbitron', sans-serif; font-weight: 900;
+            text-transform: uppercase; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);
+        }
+
+        /* 💎 RESULT SYSTEM */
+        .result-panel {
+            background: rgba(0, 242, 254, 0.03); border: 2px dashed var(--neon-cyan);
+            border-radius: 25px; padding: 30px; text-align: center; display: none;
+            margin-top: 35px; animation: fadeInUp 0.5s;
+        }
+
+        .master-key-text {
+            font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900;
+            color: #fff; text-shadow: 0 0 15px var(--neon-cyan);
+            display: block; margin: 15px 0; letter-spacing: 3px;
+        }
+
+        /* 📊 TABLE SYSTEM */
+        .history-table {
+            width: 100%; border-collapse: separate; border-spacing: 0 10px;
+        }
+        .history-table th {
+            padding: 20px; font-size: 0.8rem; color: #5c6b89; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .history-table tr { background: rgba(255, 255, 255, 0.02); transition: 0.3s; }
+        .history-table tr:hover { background: rgba(255, 255, 255, 0.05); }
+        .history-table td { padding: 20px; border: none; }
+        .history-table td:first-child { border-radius: 15px 0 0 15px; }
+        .history-table td:last-child { border-radius: 0 15px 15px 0; }
+
+        .badge-ark { padding: 6px 15px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+        .bg-active { background: rgba(0, 255, 136, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
+        .bg-expired { background: rgba(255, 49, 49, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); }
+
+        /* 💡 PRICE TICKET */
+        .price-ticket {
+            background: rgba(255, 206, 0, 0.1); border: 1px solid var(--gold);
+            padding: 10px 20px; border-radius: 12px; color: var(--gold);
+            font-weight: 800; display: inline-flex; align-items: center; gap: 10px;
+        }
+
+        /* 📱 MOBILE RESPONSIVENESS */
+        @media (max-width: 768px) {
+            .ark-card { padding: 25px; }
+            .master-key-text { font-size: 1.4rem; }
+            .brand-title { font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
+    <div class="grid-bg"></div>
 
-    <nav class="navbar sticky-top">
-        <div class="container-fluid d-flex justify-content-between align-items-center px-4">
-            <span class="navbar-brand brand-name text-white m-0">
-                <i class="bi bi-lightning-charge-fill me-2 text-warning"></i>ARK CORE <span style="color:var(--neon-blue)">GEN</span>
-            </span>
-            
-            <div class="balance-box d-none d-md-flex">
-                <i class="bi bi-wallet2 text-info fs-4"></i>
-                <div>
-                    <div class="small text-muted" style="font-size: 0.6rem; letter-spacing: 1px;">AVAILABLE BALANCE</div>
-                    <div class="balance-amount" id="topBalance">₹0</div>
-                </div>
+    <nav class="ark-nav d-flex justify-content-between align-items-center">
+        <div class="brand-title"><i class="bi bi-shield-lock-fill"></i> ARK CORE</div>
+        <div class="d-flex align-items-center gap-3">
+            <div class="bal-container animate__animated animate__pulse animate__infinite">
+                <i class="bi bi-wallet2 me-2"></i>₹<span id="headerBal">0</span>
             </div>
-
-            <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
-                <i class="bi bi-list-nested text-white" style="font-size: 2.2rem;"></i>
+            <button class="btn border-0 p-0" data-bs-toggle="offcanvas" data-bs-target="#arkMenu">
+                <i class="bi bi-command text-white fs-3"></i>
             </button>
         </div>
     </nav>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebarMenu">
-        <div class="offcanvas-header border-bottom border-secondary p-4">
-            <h5 class="offcanvas-title fw-bold text-white"><i class="bi bi-cpu-fill me-2"></i> SYSTEM PANEL</h5>
+    <div class="offcanvas offcanvas-end" id="arkMenu">
+        <div class="offcanvas-header p-4 border-bottom border-secondary">
+            <h5 class="offcanvas-title fw-bold"><i class="bi bi-cpu me-2"></i> SYSTEM PANEL</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
         </div>
-        <div class="offcanvas-body p-0 pt-3">
-            <a href="dashboard.html" class="menu-item"><i class="bi bi-grid-1x2-fill"></i> Main Dashboard</a>
-            <a href="keys.html" class="menu-item"><i class="bi bi-key-fill"></i> License Database</a>
-            <a href="generate_key.html" class="menu-item active"><i class="bi bi-plus-square-fill"></i> Key Generator</a>
-            <a href="users.html" class="menu-item"><i class="bi bi-people-fill"></i> User Control</a>
-            <a href="settings.html" class="menu-item"><i class="bi bi-gear-wide-connected"></i> Panel Settings</a>
-            
-            <div class="mt-5 p-4">
-                <div class="balance-box mb-4 d-md-none">
-                    <i class="bi bi-wallet2 text-info fs-4"></i>
-                    <div class="balance-amount" id="sideBalance">₹0</div>
+        <div class="offcanvas-body p-0">
+            <a href="#" class="nav-link-custom active"><i class="bi bi-key-fill me-3"></i> Key Generator</a>
+            <a href="#" class="nav-link-custom"><i class="bi bi-hdd-network me-3"></i> Server Control</a>
+            <a href="#" class="nav-link-custom"><i class="bi bi-person-badge me-3"></i> Reseller List</a>
+            <a href="#" class="nav-link-custom"><i class="bi bi-activity me-3"></i> Global Logs</a>
+            <div class="p-4 mt-5">
+                <div class="p-3 bg-dark border border-secondary rounded-4 mb-3">
+                    <small class="text-secondary d-block">Authorized Identity:</small>
+                    <span id="roleLabel" class="fw-bold text-info">Verifying...</span>
                 </div>
-                <a href="login.html" class="btn btn-outline-danger w-100 rounded-pill fw-bold py-3">TERMINATE SESSION</a>
+                <button class="btn btn-outline-danger w-100 rounded-pill">TERMINATE SESSION</button>
             </div>
         </div>
     </div>
 
     <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="gen-card">
-                    <div class="d-flex justify-content-between align-items-center mb-5">
-                        <h4 class="m-0 fw-bold"><i class="bi bi-shield-lock-fill me-3 text-info"></i>KEY GENERATOR</h4>
-                        <span class="badge bg-danger px-3 py-2" style="font-size: 0.7rem;">PLAN PRICE: ₹10,000</span>
+        <div class="row g-4">
+            
+            <div class="col-lg-7">
+                <div class="ark-card animate__animated animate__fadeInLeft">
+                    <div class="section-header">
+                        <i class="bi bi-patch-check-fill text-info fs-4"></i>
+                        <span>LICENSE AUTHORIZATION ENGINE</span>
                     </div>
 
-                    <form id="mainGenForm">
+                    <form id="keyForm">
                         <div class="mb-4">
-                            <label class="form-label">TARGET GAME PACKAGE</label>
-                            <input type="text" id="gamePackage" class="form-control form-control-custom" value="com.pubg.imobile" required>
+                            <label class="field-label">Target Package Name</label>
+                            <input type="text" id="pkg" class="ark-input" value="com.pubg.imobile" required>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label class="form-label">VALIDITY DURATION</label>
-                                <select id="keyDuration" class="form-select form-control-custom">
-                                    <option value="1">1 Month Plan (₹10,000)</option>
-                                    <option value="2">2 Months Plan (₹20,000)</option>
-                                    <option value="12">1 Year Plan (₹100,000)</option>
+                                <label class="field-label">Subscription Tier</label>
+                                <select id="plan" class="ark-input" onchange="updateLiveBill()">
+                                    <option value="10000">1 Month Premium (₹10,000)</option>
+                                    <option value="20000">2 Month Ultimate (₹20,000)</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-4">
-                                <label class="form-label">HARDWARE DEVICE LIMIT</label>
-                                <select id="deviceLimit" class="form-select form-control-custom">
-                                    <option value="1">Single Device (1 HWID)</option>
-                                    <option value="2">Dual Device (2 HWID)</option>
-                                    <option value="2">Dual Device (3 HWID)</option>
+                                <label class="field-label">Multi-Device Access</label>
+                                <select id="slots" class="ark-input" onchange="updateLiveBill()">
+                                    <option value="1">1 Device (Standard)</option>
+                                    <option value="2">2 Devices (+₹5,000)</option>
+                                    <option value="3">3 Devices (+₹10,000)</option>
                                 </select>
                             </div>
                         </div>
 
-                        <button type="submit" id="genBtn" class="btn btn-ark w-100 mt-4">
-                            <i class="bi bi-stars me-2"></i> AUTHORIZE & GENERATE KEY
-                        </button>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="price-ticket">
+                                <i class="bi bi-tag-fill"></i> Total: <span id="billVal">₹10,000</span>
+                            </div>
+                            <button type="submit" class="btn-ark-glow" style="width: auto; padding-left: 50px; padding-right: 50px;">
+                                GENERATE KEY
+                            </button>
+                        </div>
                     </form>
 
-                    <div id="genResultBox" class="result-box">
-                        <p class="text-uppercase small fw-bold text-muted mb-1">Authorization Successful</p>
-                        <span id="displayFinalKey" class="key-text">ARK-WAITING-SYNC</span>
-                        <div class="d-flex gap-3 justify-content-center">
-                            <button class="btn btn-info rounded-pill px-4 fw-bold" onclick="copyToClipboard()"><i class="bi bi-copy me-2"></i>COPY</button>
-                            <button class="btn btn-outline-light rounded-pill px-4 fw-bold" onclick="window.location.reload()"><i class="bi bi-arrow-repeat me-2"></i>NEW</button>
+                    <div id="resBox" class="result-panel">
+                        <span class="small text-secondary fw-bold">ENCRYPTED MASTER KEY:</span>
+                        <span id="finalKeyText" class="master-key-text">---</span>
+                        <div class="mt-4 d-flex gap-2 justify-content-center">
+                            <button class="btn btn-outline-info rounded-pill px-4" onclick="copyMasterKey()">
+                                <i class="bi bi-clipboard me-2"></i>COPY
+                            </button>
+                            <button class="btn btn-info rounded-pill px-4" onclick="location.reload()">
+                                <i class="bi bi-arrow-repeat me-2"></i>NEW
+                            </button>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="history-card">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="m-0 fw-bold text-info"><i class="bi bi-activity me-2"></i> GENERATION LOGS</h5>
-                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="clearHistory()">Clear History</button>
+            <div class="col-lg-5" id="ownerBlock" style="display: none;">
+                <div class="ark-card owner-border animate__animated animate__fadeInRight">
+                    <div class="section-header text-danger">
+                        <i class="bi bi-shield-lock-fill fs-4"></i>
+                        <span>OWNER SECRET CONSOLE</span>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>LICENSE KEY</th>
-                                    <th>PACKAGE</th>
-                                    <th>EXPIRES ON</th>
-                                    <th>STATUS</th>
-                                </tr>
-                            </thead>
-                            <tbody id="logTableBody">
-                                </tbody>
-                        </table>
+
+                    <form id="ownerForm">
+                        <div class="mb-3">
+                            <label class="field-label">Assignment Role</label>
+                            <select id="newRoleType" class="ark-input">
+                                <option value="Reseller">Authorized Reseller</option>
+                                <option value="Owner">Co-Owner Access</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="field-label">Partner Identity</label>
+                            <input type="text" id="partnerName" class="ark-input" placeholder="e.g. Aditya_Modz" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="field-label">Balance Grant</label>
+                                <input type="number" id="grantBal" class="ark-input" value="100000">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="field-label">Key Quota</label>
+                                <input type="number" id="quota" class="ark-input" value="500">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-owner-glow mt-2">CREATE MASTER SECRET</button>
+                    </form>
+
+                    <div id="secretRes" class="result-panel" style="border-color: var(--neon-red);">
+                        <span class="small text-danger fw-bold">PRIVILEGE TOKEN:</span>
+                        <span id="secretKeyText" class="master-key-text" style="color: var(--neon-red); text-shadow: 0 0 15px var(--neon-red);">---</span>
                     </div>
                 </div>
+            </div>
+
+        </div>
+
+        <div class="ark-card mt-4 animate__animated animate__fadeInUp">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="section-header m-0"><i class="bi bi-list-stars text-info"></i> SYSTEM GENERATION LOGS</div>
+                <div class="text-secondary small">Live Syncing Enabled ●</div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Key ID</th>
+                            <th>Package</th>
+                            <th>Devices</th>
+                            <th>Expiry</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logBody">
+                        </tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script>
-        // --- FIREBASE INITIALIZATION ---
-        const firebaseConfig = {
+        // --- 📡 FIREBASE INITIALIZATION ---
+        const config = {
             apiKey: "AIzaSyA5u_ExHIn25nKFVBK-vAYqJ7Z5zcy63nQ",
             authDomain: "arkcore-f92a6.firebaseapp.com",
             databaseURL: "https://arkcore-f92a6-default-rtdb.firebaseio.com",
@@ -255,109 +355,146 @@
             messagingSenderId: "309961270452",
             appId: "1:309961270452:web:7847734a03c8bfe55123e1"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        firebase.initializeApp(config);
+        const database = firebase.database();
 
-        // 🆔 USER CONTEXT (Testing as Owner)
-        const USER_ID = "-ONyC_2D2P8yK5rLh2_G"; // Aapki Real Firebase User ID yahan aayegi
-        const PLAN_PRICE = 10000;
+        // --- 🛡️ SESSION CONFIGURATION ---
+        const SESSION_UID = "-ONyC_2D2P8yK5rLh2_G"; 
         let currentBalance = 0;
+        let currentUserRole = "";
 
-        // 🔄 SYNC REAL BALANCE
-        db.ref('Users/' + USER_ID).on('value', (snapshot) => {
-            if(snapshot.exists()) {
-                currentBalance = parseInt(snapshot.val().balance || 0);
-                document.getElementById('topBalance').innerText = '₹' + currentBalance.toLocaleString();
-                document.getElementById('sideBalance').innerText = '₹' + currentBalance.toLocaleString();
+        // --- 🔄 REAL-TIME SYNC ENGINE ---
+        database.ref('Users/' + SESSION_UID).on('value', (snap) => {
+            if(snap.exists()){
+                const d = snap.val();
+                currentBalance = parseInt(d.balance || 0);
+                currentUserRole = d.role || "User";
+
+                // UI Updates
+                document.getElementById('headerBal').innerText = currentBalance.toLocaleString();
+                document.getElementById('roleLabel').innerText = currentUserRole.toUpperCase();
+
+                // Advanced Privilege Check
+                if(currentUserRole === "Owner") {
+                    document.getElementById('ownerBlock').style.display = "block";
+                    document.getElementById('headerBal').parentElement.style.borderColor = "var(--neon-green)";
+                    document.getElementById('headerBal').parentElement.style.color = "var(--neon-green)";
+                } else {
+                    document.getElementById('ownerBlock').remove(); // Extra Security
+                }
             }
         });
 
-        // 🎲 ARK KEY GENERATOR ENGINE
-        function generateArkKey(length) {
+        // --- 💰 DYNAMIC PRICING ENGINE ---
+        function updateLiveBill() {
+            const basePrice = parseInt(document.getElementById('plan').value);
+            const slotBonus = (parseInt(document.getElementById('slots').value) - 1) * 5000;
+            const total = basePrice + slotBonus;
+            document.getElementById('billVal').innerText = "₹" + total.toLocaleString();
+            return total;
+        }
+
+        // --- 🎲 STRING RANDOMIZER ---
+        function generateToken(length) {
             let result = '';
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             for (let i = 0; i < length; i++) {
                 result += characters.charAt(Math.floor(Math.random() * characters.length));
             }
-            return 'ARK-' + result;
+            return result;
         }
 
-        // 🪄 MAIN GENERATION LOGIC WITH AUTO-DEDUCTION
-        document.getElementById('mainGenForm').addEventListener('submit', function(e) {
+        // --- 🪄 KEY GENERATION HANDLER ---
+        document.getElementById('keyForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // ❌ BALANCE CHECK
-            if(currentBalance < PLAN_PRICE) {
-                alert("❌ INSUFFICIENT BALANCE!\nRequired: ₹10,000\nYour Balance: ₹" + currentBalance);
+            const totalCost = updateLiveBill();
+
+            // 🛑 Balance Validation
+            if(currentUserRole !== "Owner" && currentBalance < totalCost) {
+                alert("🔴 INSUFFICIENT BALANCE!\nTotal Cost: ₹" + totalCost.toLocaleString() + "\nYour Balance: ₹" + currentBalance.toLocaleString());
                 return;
             }
 
-            const btn = document.getElementById('genBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> AUTHORIZING...';
+            const masterKey = "ARK-" + generateToken(12);
+            const batchUpdate = {};
 
-            const pkg = document.getElementById('gamePackage').value;
-            const months = parseInt(document.getElementById('keyDuration').value);
-            const devLimit = document.getElementById('deviceLimit').value;
-            const finalKey = generateArkKey(12);
-            
-            const expDate = new Date();
-            expDate.setMonth(expDate.getMonth() + months);
+            // Deduction Logic
+            if(currentUserRole !== "Owner") {
+                batchUpdate['/Users/' + SESSION_UID + '/balance'] = currentBalance - totalCost;
+            }
 
-            // 💸 DEDUCT BALANCE & SAVE KEY (Atomic Update)
-            const newBalance = currentBalance - PLAN_PRICE;
-            
-            const updates = {};
-            updates['/Users/' + USER_ID + '/balance'] = newBalance;
-            updates['/Keys/' + finalKey] = {
-                key: finalKey,
-                package: pkg,
-                expiry: expDate.toDateString(),
-                deviceLimit: devLimit,
-                status: "active",
-                resellerId: USER_ID,
+            // Database Entry
+            batchUpdate['/Keys/' + masterKey] = {
+                key: masterKey,
+                package: document.getElementById('pkg').value,
+                slots: document.getElementById('slots').value,
+                expiry: "30 Days Active",
+                cost: totalCost,
+                status: "unused",
+                creator: SESSION_UID,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
-            db.ref().update(updates).then(() => {
-                // Success UI
-                document.getElementById('displayFinalKey').innerText = finalKey;
-                document.getElementById('genResultBox').style.display = 'block';
-                btn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i> KEY GENERATED';
-                loadKeyLogs();
-            }).catch(err => {
-                alert("Database Error: " + err.message);
-                btn.disabled = false;
+            database.ref().update(batchUpdate).then(() => {
+                document.getElementById('finalKeyText').innerText = masterKey;
+                document.getElementById('resBox').style.display = 'block';
+                loadLogs();
             });
         });
 
-        // 📋 CLIPBOARD FUNCTION
-        function copyToClipboard() {
-            const keyText = document.getElementById('displayFinalKey').innerText;
-            navigator.clipboard.writeText(keyText);
-            alert("Key Copied Successfully!");
-        }
+        // --- 🛑 OWNER ACTION HANDLER ---
+        document.getElementById('ownerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const secretCode = "MASTER-" + generateToken(8);
+            
+            database.ref('Secrets').push({
+                code: secretCode,
+                role: document.getElementById('newRoleType').value,
+                assignedTo: document.getElementById('partnerName').value,
+                balance: document.getElementById('grantBal').value,
+                limit: document.getElementById('quota').value,
+                status: "active",
+                issuedBy: SESSION_UID
+            }).then(() => {
+                document.getElementById('secretKeyText').innerText = secretCode;
+                document.getElementById('secretRes').style.display = 'block';
+            });
+        });
 
-        // 📊 LOAD LOGS
-        function loadKeyLogs() {
-            db.ref('Keys').orderByChild('resellerId').equalTo(USER_ID).limitToLast(8).on('value', (snap) => {
-                const tbody = document.getElementById('logTableBody');
-                tbody.innerHTML = '';
-                snap.forEach((child) => {
-                    const d = child.val();
-                    tbody.innerHTML += `
-                        <tr>
-                            <td class="fw-bold text-info">${d.key}</td>
-                            <td><code class="text-white-50">${d.package}</code></td>
-                            <td>${d.expiry}</td>
-                            <td><span class="badge-status bg-unused">READY</span></td>
+        // --- 📋 LOGS ENGINE ---
+        function loadLogs() {
+            database.ref('Keys').limitToLast(10).on('value', (snap) => {
+                const body = document.getElementById('logBody');
+                body.innerHTML = "";
+                snap.forEach(child => {
+                    const k = child.val();
+                    const statusUI = k.status === 'unused' ? 'bg-active' : 'bg-expired';
+                    
+                    body.innerHTML += `
+                        <tr class="animate__animated animate__fadeIn">
+                            <td class="fw-bold text-info">${k.key}</td>
+                            <td class="small">${k.package}</td>
+                            <td><span class="badge bg-dark border border-secondary">${k.slots} Device</span></td>
+                            <td class="small text-secondary">${k.expiry}</td>
+                            <td class="text-center"><span class="badge-ark ${statusUI}">${k.status}</span></td>
                         </tr>
                     `;
                 });
             });
         }
-        
-        loadKeyLogs();
+
+        // --- 📎 UTILS ---
+        function copyMasterKey() {
+            const txt = document.getElementById('finalKeyText').innerText;
+            navigator.clipboard.writeText(txt);
+            alert("KEY COPIED TO SYSTEM CLIPBOARD!");
+        }
+
+        // Boot
+        window.onload = function() {
+            loadLogs();
+            updateLiveBill();
+        };
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
