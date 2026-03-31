@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARK CORE v4.0 | Advanced Neural Dashboard</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Rajdhani:wght@300;700&family=Fira+Code:wght@300;500&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* 🛠️ ADVANCED CSS ARCHITECTURE v4.0 */
+        :root {
+            --neon-cyan: #00f2fe;
+            --neon-blue: #0061ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff3131;
+            --neon-green: #00ff88;
+            --deep-space: #010409;
+            --panel-glass: rgba(13, 22, 48, 0.95);
+            --border-glow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
+        body { background: var(--deep-space); color: #fff; overflow-x: hidden; min-height: 300vh; }
+
+        /* 🌌 HYPER-DRIVE BACKGROUND */
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; opacity: 0.4; }
+
+        /* 🔝 ENTERPRISE NAVBAR */
+        .master-nav {
+            background: var(--panel-glass); backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--neon-cyan); padding: 1rem 3rem;
+            position: sticky; top: 0; z-index: 9999; box-shadow: var(--border-glow);
+        }
+
+        .logo-section { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.8rem; letter-spacing: 5px; }
+        .logo-section span { color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
+
+        .stat-pill {
+            background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan);
+            padding: 8px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px;
+        }
+
+        /* 📟 SIDEBAR NAVIGATION */
+        .sidebar {
+            width: 280px; height: 100vh; background: var(--panel-glass);
+            position: fixed; left: 0; top: 80px; border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 2rem 1rem;
+        }
+
+        .nav-item-custom {
+            padding: 15px 20px; border-radius: 12px; margin-bottom: 10px;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 15px;
+            color: #8fa3cc; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .nav-item-custom:hover, .nav-item-custom.active {
+            background: linear-gradient(90deg, rgba(0, 242, 254, 0.1), transparent);
+            color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan);
+        }
+
+        /* 🖥️ MAIN VIEWPORT */
+        .viewport { margin-left: 280px; padding: 3rem; }
+
+        /* 📊 ANALYTICS CARDS */
+        .glass-card {
+            background: var(--panel-glass); border-radius: 24px; padding: 30px;
+            border: 1px solid rgba(255,255,255,0.05); position: relative;
+            overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            margin-bottom: 30px;
+        }
+
+        .card-header-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .card-title { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--neon-cyan); letter-spacing: 2px; }
+
+        /* 🔑 KEY GEN ENGINE UI */
+        .engine-input {
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 15px; padding: 18px; color: #fff; width: 100%;
+            font-size: 1.1rem; font-weight: 600; margin-bottom: 25px;
+            transition: 0.4s;
+        }
+
+        .engine-input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(0, 242, 254, 0.3); }
+
+        .btn-execute {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-cyan));
+            border: none; border-radius: 15px; padding: 22px; width: 100%;
+            color: #fff; font-family: 'Orbitron', sans-serif; font-weight: 900;
+            font-size: 1.2rem; letter-spacing: 3px; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 97, 255, 0.4);
+        }
+
+        .btn-execute:active { transform: scale(0.98); }
+
+        /* 📋 ADVANCED TABLE SYSTEM */
+        .ark-table-wrapper { border-radius: 20px; overflow: hidden; background: rgba(0,0,0,0.2); }
+        .ark-table { width: 100%; color: #fff; border-collapse: separate; border-spacing: 0; }
+        .ark-table th { padding: 20px; background: rgba(255,255,255,0.02); color: var(--neon-cyan); text-transform: uppercase; font-size: 0.8rem; }
+        .ark-table td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
+        .ark-table tr:hover { background: rgba(0, 242, 254, 0.05); }
+
+        /* 🚦 STATUS INDICATORS */
+        .status-pill { padding: 5px 15px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+        .status-active { background: rgba(0, 255, 136, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
+        .status-revoked { background: rgba(255, 49, 49, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); }
+
+        /* 🧪 MODAL CORE */
+        .modal-glass { background: rgba(1, 4, 9, 0.95); border: 2px solid var(--neon-cyan); border-radius: 30px; color: #fff; }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <nav class="master-nav d-flex justify-content-between align-items-center">
+        <div class="logo-section">ARK <span>CORE</span></div>
+        <div class="d-flex gap-4 align-items-center">
+            <div class="stat-pill animate__animated animate__pulse animate__infinite">
+                <i class="bi bi-cpu text-info"></i> SYSTEM: <span class="text-success">OPTIMIZED</span>
+            </div>
+            <div class="stat-pill">
+                <i class="bi bi-wallet2 text-warning"></i> ₹<span id="globalBalance">0.00</span>
+            </div>
+            <div class="dropdown">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=00f2fe&color=fff" class="rounded-circle" width="45" style="cursor: pointer; border: 2px solid var(--neon-cyan);">
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <div class="nav-item-custom active" onclick="nav('dashboard-v')"><i class="bi bi-grid-1x2-fill"></i> DASHBOARD</div>
+        <div class="nav-item-custom" onclick="nav('keygen-v')"><i class="bi bi-shield-lock-fill"></i> KEY ENGINE</div>
+        <div class="nav-item-custom" id="adminLink" onclick="nav('users-v')" style="display:none;"><i class="bi bi-people-fill"></i> MEMBERS</div>
+        <div class="nav-item-custom" onclick="nav('analytics-v')"><i class="bi bi-bar-chart-fill"></i> ANALYTICS</div>
+        <div class="nav-item-custom" onclick="window.location.reload()"><i class="bi bi-power text-danger"></i> LOGOUT</div>
+    </div>
+
+    <div class="viewport">
+        
+        <div id="dashboard-v" class="view-content">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="glass-card text-center">
+                        <div class="card-title mb-3">TOTAL REVENUE</div>
+                        <h2 class="fw-bold" style="color: var(--neon-green);">₹<span id="totalRev">0</span></h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card text-center">
+                        <div class="card-title mb-3">ACTIVE KEYS</div>
+                        <h2 class="fw-bold text-info" id="activeKeyCount">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="glass-card" style="padding: 15px;">
+                        <canvas id="miniChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card mt-5">
+                <div class="card-header-line">
+                    <div class="card-title">RECENT PROTOCOL LOGS</div>
+                    <button class="btn btn-sm btn-outline-info" onclick="exportData()">EXPORT CSV</button>
+                </div>
+                <div class="ark-table-wrapper">
+                    <table class="ark-table">
+                        <thead>
+                            <tr>
+                                <th>Key Hash</th>
+                                <th>Target Package</th>
+                                <th>Plan</th>
+                                <th>Timestamp</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="liveLogs"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="keygen-v" class="view-content" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="glass-card animate__animated animate__fadeInUp">
+                        <div class="card-title mb-5 text-center">AUTHENTICATION ENGINE</div>
+                        <form id="genForm">
+                            <label class="small text-muted mb-2">TARGET PACKAGE</label>
+                            <input type="text" id="p_id" class="engine-input" value="com.pubg.imobile">
+                            
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="small text-muted mb-2">LICENSE DURATION</label>
+                                    <select id="p_time" class="engine-input" onchange="syncPrice()">
+                                        <option value="10000">1 Month Premium</option>
+                                        <option value="25000">3 Month Ultimate</option>
+                                        <option value="80000">1 Year VIP</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="small text-muted mb-2">HWID SLOTS</label>
+                                    <select id="p_slots" class="engine-input" onchange="syncPrice()">
+                                        <option value="1">1 Device</option>
+                                        <option value="2">2 Devices (+₹5k)</option>
+                                        <option value="5">5 Devices (+₹15k)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="text-center mb-4">
+                                <h4 class="text-warning fw-bold">TOTAL PAYABLE: ₹<span id="priceShow">10,000</span></h4>
+                            </div>
+
+                            <button type="submit" class="btn-execute">INITIALIZE GENERATION</button>
+                        </form>
+
+                        <div id="resultBox" class="mt-5 text-center" style="display: none;">
+                            <div class="p-4 rounded-4" style="background: rgba(0,242,254,0.05); border: 1px dashed var(--neon-cyan);">
+                                <div class="small text-info mb-2">SECURE LICENSE KEY</div>
+                                <h3 id="keyDisplay" class="fw-bold animate__animated animate__flash" style="font-family: 'Fira Code', monospace; letter-spacing: 2px;">---</h3>
+                                <button class="btn btn-info mt-3 px-5 rounded-pill" onclick="copyKey()">COPY KEY</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="users-v" class="view-content" style="display: none;">
+            <div class="glass-card">
+                <div class="card-title mb-4">MEMBER ACCESS CONTROL</div>
+                <div class="ark-table-wrapper">
+                    <table class="ark-table">
+                        <thead>
+                            <tr>
+                                <th>UID / Username</th>
+                                <th>Role</th>
+                                <th>Balance (₹)</th>
+                                <th>Management</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="mEdit" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-glass">
+                <div class="modal-body p-5">
+                    <h4 class="font-orbitron mb-4 text-center">EDIT MEMBER</h4>
+                    <input type="hidden" id="edit_uid">
+                    <label class="small mb-2">Username</label>
+                    <input type="text" id="edit_name" class="engine-input" readonly>
+                    <label class="small mb-2">Credit Balance</label>
+                    <input type="number" id="edit_bal" class="engine-input">
+                    <label class="small mb-2">Account Role</label>
+                    <select id="edit_role" class="engine-input">
+                        <option value="User">User</option>
+                        <option value="Reseller">Reseller</option>
+                        <option value="Owner">Owner</option>
+                    </select>
+                    <button class="btn-execute" onclick="commitEdit()">SAVE DATABASE UPDATES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 📡 FIREBASE PROTOCOL ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5u_ExHIn25nKFVBK-vAYqJ7Z5zcy63nQ",
+            authDomain: "arkcore-f92a6.firebaseapp.com",
+            databaseURL: "https://arkcore-f92a6-default-rtdb.firebaseio.com",
+            projectId: "arkcore-f92a6",
+            storageBucket: "arkcore-f92a6.firebasestorage.app",
+            messagingSenderId: "309961270452",
+            appId: "1:309961270452:web:7847734a03c8bfe55123e1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const mModal = new bootstrap.Modal(document.getElementById('mEdit'));
+
+        // --- 🆔 SESSION MGMT ---
+        const MY_UID = "-ONyC_2D2P8yK5rLh2_G";
+        let myBal = 0;
+        let myRole = "";
+
+        // --- 🧠 CORE NEURAL ENGINE ---
+        function init() {
+            // Real-time Balance & Permissions
+            db.ref('Users/' + MY_UID).on('value', snap => {
+                if(snap.exists()) {
+                    const u = snap.val();
+                    myBal = u.balance || 0;
+                    myRole = u.role || "User";
+                    document.getElementById('globalBalance').innerText = myBal.toLocaleString();
+                    
+                    if(myRole === "Owner") {
+                        document.getElementById('adminLink').style.display = 'flex';
+                        loadAllUsers();
+                    }
+                }
+            });
+
+            loadLogs();
+            initCanvas();
+            initCharts();
+        }
+
+        // --- 💰 PRICE LOGIC ---
+        function syncPrice() {
+            const base = parseInt(document.getElementById('p_time').value);
+            const slot = parseInt(document.getElementById('p_slots').value);
+            let extra = 0;
+            if(slot === 2) extra = 5000;
+            if(slot === 5) extra = 15000;
+            
+            const total = base + extra;
+            document.getElementById('priceShow').innerText = total.toLocaleString();
+            return total;
+        }
+
+        // --- 🪄 GEN SYSTEM ---
+        document.getElementById('genForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const cost = syncPrice();
+
+            if(myRole !== "Owner" && myBal < cost) {
+                alert("🔴 ERROR: INSUFFICIENT CREDITS");
+                return;
+            }
+
+            const key = "ARK-V4-" + Math.random().toString(36).substring(2, 12).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+            const batch = {};
+
+            if(myRole !== "Owner") {
+                batch['/Users/' + MY_UID + '/balance'] = (myBal - cost);
+            }
+
+            batch['/Keys/' + key] = {
+                key: key,
+                pkg: document.getElementById('p_id').value,
+                cost: cost,
+                owner: MY_UID,
+                status: "active",
+                slots: document.getElementById('p_slots').value,
+                time: new Date().toISOString()
+            };
+
+            db.ref().update(batch).then(() => {
+                document.getElementById('keyDisplay').innerText = key;
+                document.getElementById('resultBox').style.display = 'block';
+                document.getElementById('genForm').style.opacity = '0.4';
+            });
+        });
+
+        // --- 👥 ADMIN ENGINE ---
+        function loadAllUsers() {
+            db.ref('Users').on('value', snap => {
+                const list = document.getElementById('memberList');
+                list.innerHTML = "";
+                snap.forEach(c => {
+                    const d = c.val();
+                    list.innerHTML += `
+                        <tr>
+                            <td><div class="fw-bold">${d.username}</div><small class="text-muted">${c.key}</small></td>
+                            <td><span class="badge bg-info">${d.role}</span></td>
+                            <td class="text-success fw-bold">₹${(d.balance || 0).toLocaleString()}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-cyan" onclick="openEdit('${c.key}')"><i class="bi bi-gear-wide-connected"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        function openEdit(id) {
+            db.ref('Users/'+id).once('value', s => {
+                const d = s.val();
+                document.getElementById('edit_uid').value = id;
+                document.getElementById('edit_name').value = d.username;
+                document.getElementById('edit_bal').value = d.balance || 0;
+                document.getElementById('edit_role').value = d.role || 'User';
+                mModal.show();
+            });
+        }
+
+        function commitEdit() {
+            const id = document.getElementById('edit_uid').value;
+            db.ref('Users/'+id).update({
+                balance: parseInt(document.getElementById('edit_bal').value),
+                role: document.getElementById('edit_role').value
+            }).then(() => { mModal.hide(); alert("DATABASE UPDATED"); });
+        }
+
+// --- 📊 ANALYTICS ENGINE ---
+        function loadLogs() {
+            db.ref('Keys').limitToLast(15).on('value', snap => {
+                const b = document.getElementById('liveLogs');
+                b.innerHTML = "";
+                let count = 0;
+                let rev = 0;
+                snap.forEach(c => {
+                    const k = c.val();
+                    rev += k.cost;
+                    count++;
+                    b.innerHTML += `
+                        <tr>
+                            <td class="text-info fw-bold">${k.key.substring(0,12)}...</td>
+                            <td>${k.pkg}</td>
+                            <td>₹${k.cost}</td>
+                            <td class="small">${new Date(k.time).toLocaleDateString()}</td>
+                            <td><span class="status-pill status-active">LIVE</span></td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('totalRev').innerText = rev.toLocaleString();
+                document.getElementById('activeKeyCount').innerText = count;
+            });
+        }
+        
+        // --- 🎨 VISUALS ENGINE ---
+        function initCanvas() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const particles = [];
+            for(let i=0; i<100; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                ctx.fillStyle = '#00f2fe';
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 1, 0, Math.PI*2);
+                    ctx.fill();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+        
+        function initCharts() {
+            const ctx = document.getElementById('miniChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Sales Growth',
+                        data: [12, 19, 15, 25, 22, 30],
+                        borderColor: '#00f2fe',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(0, 242, 254, 0.1)'
+                    }]
+                },
+                options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
+            });
+        }
+
+        // --- 📎 UTILS ---
+        function nav(id) {
+            document.querySelectorAll('.view-content').forEach(v => v.style.display = 'none');
+            document.querySelectorAll('.nav-item-custom').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+
+        function copyKey() {
+            navigator.clipboard.writeText(document.getElementById('keyDisplay').innerText);
+            alert("KEY COPIED TO NEURAL CLIPBOARD");
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
